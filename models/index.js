@@ -3,7 +3,6 @@ mongoose.connect('mongodb://localhost/npmTracker');
 // mongoose.connect(process.env.MONGOLAB_URI)
 var db = mongoose.connection;
 db.on('error', console.error.bind(console, 'connection error'));
-console.log('RUN')
 
 var Schema = mongoose.Schema;
 
@@ -20,6 +19,8 @@ var packageSchema = new Schema({
 })
 
 //packageSchema.pre('save',function(){ write a hook to add to total Downloads})
+//write post save hook to $sort the downloads array on date for ease of read
+//also need to convert them all to date objects, but do that in the route
 
 
 var npmPackage = mongoose.model('Package', packageSchema);
