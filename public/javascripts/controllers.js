@@ -9,7 +9,6 @@ app.controller('MainCtrl',function($scope,testing){
 })
 
 
-angular.module('npmTracker')
-  .factory('testing', function ($resource) {
+app.factory('testing', function ($resource) {
     return $resource('/data')
 });
