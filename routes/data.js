@@ -8,6 +8,7 @@ var request = require('request');
 //Broken by day: https://api.npmjs.org/downloads/range/2014-01-03:2014-02-03/jquery
 
 router.get('/?', function(req,res){
+	// console.log('Req Query ',req.query)
 	var startDate = req.query.startDate;
 	var endDate =  req.query.endDate;
 	var packageName = req.query.name;
@@ -23,12 +24,19 @@ router.get('/?', function(req,res){
 	})
 	var rangeByDate ='https://api.npmjs.org/downloads/range/'+startDate+':'+endDate+'/'+packageName;
 	request(rangeByDate,function(err, response){
-		console.log('request response', response.body)
-		//forEach entry turn the date string into a real date
+		// console.log(JSON.parse(response.body))
+		var obj = JSON.parse(response.body)
+		var downloads = obj.downloads;
+		downloads.forEach(function(record,i){
+			
+			//converting to date objects before writing to db
+			//Might want to leave the datestring also, for checking DB before hitting API
+			
+			record.day = new Date(record.day); 
+		})
+		// console.log('downloads ',downloads)
+	return res.json(downloads);
 	})
-	// console.log('Req Query ',req.query)
-	
-	res.status(200).send();
 });
 
 

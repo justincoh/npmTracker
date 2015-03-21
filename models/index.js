@@ -19,7 +19,9 @@ var packageSchema = new Schema({
 })
 
 //packageSchema.pre('save',function(){ write a hook to add to total Downloads})
-//write post save hook to $sort the downloads array on date for ease of read
+//write post save hook to $sort the downloads array on date for ease of read?
+//mongo docs:'without sort mongo does not guarantee order of query results'
+//so don't think sorting on insert serves any purpose
 //also need to convert them all to date objects, but do that in the route
 
 
