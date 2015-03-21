@@ -18,13 +18,12 @@ router.get('/?', function(req, res) {
     var startDate = req.query.startDate;
     var endDate = req.query.endDate;
     var packageName = req.query.name;
-    var junk = req.query.junk;
-
     
-    var databasePromise = models.npmPackages.findOne({
-        name: packageName 
-        //this needs to check against the dates being entered, not just against the package name
-    }).exec();
+    //This isn't set up to handle initial resource.query
+    //need to pass a param for initial load query
+
+    var databasePromise = models.npmPackages.findOne({name: packageName})
+    			.exec();
 
     databasePromise.then(function(docs) {
         if (docs === null) { 
@@ -34,20 +33,21 @@ router.get('/?', function(req, res) {
                 var obj = JSON.parse(response.body)
                 var downloads = obj.downloads;
                 downloads.forEach(function(record, i) {
-                    //converting to date objects before writing to db
-                    //Might want to leave the datestring also, for checking DB before hitting API
-
-                    record.day = new Date(record.day);
-                })
-                obj.downloads = downloads //resetting obj for DB write
-                models.npmPackages.update({name:packageName},obj,{upsert:true})
-                return res.json(downloads);
-            })
+                	//adding actual Date field for sorting later
+                    record.date = new Date(record.day);
+                });
+                //resetting obj for DB write
+                obj.downloads = downloads; 
+                
+                models.npmPackages.update({name:packageName},obj,{upsert:true},function(err,numAffected){
+                	if(err){console.log('UPSERT ERR ',err)};
+                	return res.json(obj);
+                });
+            });
         } else{
         	return res.json(docs);
         }
-        // console.log("databasePromise res ",res)
-    })
+    });
 
 });
 

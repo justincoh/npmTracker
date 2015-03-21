@@ -13,7 +13,8 @@ var packageSchema = new Schema({
     },
     downloads: [{
             day: {type: String, required:true},
-            downloads: {type: Number, required:true}
+            downloads: {type: Number, required:true},
+            date: {type:Date,required:true}
     }],
     totalDownloads: Number
 })
