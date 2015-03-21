@@ -1,0 +1,16 @@
+<table class='table table-hover'>
+    <thead>
+        <tr>
+            <th>Package</th>
+            <th>Date1</th>
+            <th>Date2</th>
+            <th>Date3</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr>
+            <td>{{sumaryData.name}}</td>
+            <td ng-repeat='entry in summaryData.downloads'>{{entry.downloads | number}}</td>
+        </tr>
+    </tbody>
+</table>

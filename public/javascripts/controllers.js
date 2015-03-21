@@ -5,12 +5,13 @@ app.controller('MainCtrl', function($scope, data) {
     // data.query(function(res,err){
     // 	$scope.everything = res;
     // });
+
     $scope.resourceTest = function() {
         data.get({
                 //Hardocding for dev purposes, getting display right
-                name: 'Express',
+                name: 'Gulp',
                 startDate: '2015-01-01',
-                endDate: '2015-01-31'
+                endDate: '2015-01-04'
             }, function(res, err) {
                 console.log('callback res ', res);
                 $scope.data = res;
