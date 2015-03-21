@@ -21,6 +21,7 @@ router.get('/?', function(req, res) {
     
     //This isn't set up to handle initial resource.query
     //need to pass a param for initial load query
+    console.log(req.query.junk === undefined) //heres how
 
     var databasePromise = models.npmPackages.findOne({name: packageName})
     			.exec();
