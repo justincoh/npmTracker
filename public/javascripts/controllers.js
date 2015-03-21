@@ -10,6 +10,7 @@ app.controller('MainCtrl',function($scope,testing){
                 endDate: '2015-01-05'
             }, function(res,err) {
                 console.log('callback res ', res)
+                console.log('\n','full args ',arguments)
             }
 
         )
