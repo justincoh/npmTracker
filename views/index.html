@@ -8,12 +8,12 @@
     <nav class="navbar navbar-default">
     </nav>
     <div class="container">
-        <div class="row">
-            <h1>h1</h1>
-            <div class="col-sm-4">
                 <h3>{{message}}</h3>
-                <h5>Get: {{data}}</h5>
-                <button class="btn btn-primary" ng-click='resourceTest()'>Testing ng stuff</button>
+        <div class="row">
+        	<div class="col-sm-12">Graph will go here</div>
+            <div class="col-sm-4">
+                <button class="btn btn-primary" ng-click='resourceTest()'>Button</button>
+                <h5>{{data}}</h5>
             </div>
             <summary-table summary-data='data'></summary-table>
             <!--this code-->
@@ -23,6 +23,7 @@
 </body>
 <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.3.14/angular.min.js"></script>
 <script src='modules/angular-resource/angular-resource.min.js'></script>
+<script src="http://d3js.org/d3.v3.min.js" charset="utf-8"></script>
 <script src='javascripts/app.js'></script>
 <script src='javascripts/controllers.js'></script>
 <script src='javascripts/directives.js'></script>

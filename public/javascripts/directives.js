@@ -10,7 +10,14 @@ app.directive('summaryTable',function(){
 			summaryData: '='
 		},
 		link: function(scope,element,attrs){
-			console.log('Loaded?')
+			scope.d3Test = function(){
+				var table = d3.select('table');
+				var color = "red";
+				if(table.style('background-color')==='rgb(255, 0, 0)'){
+					color = 'white';
+				}
+				table.transition().duration(1000).ease('bounce').style('background-color',color);
+			}
 		}
 	}
 })

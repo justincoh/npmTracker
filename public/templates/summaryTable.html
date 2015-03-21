@@ -2,15 +2,15 @@
     <thead>
         <tr>
             <th>Package</th>
-            <th>Date1</th>
-            <th>Date2</th>
-            <th>Date3</th>
+            <th ng-repeat='entry in summaryData.downloads'>{{entry.day}}</th>
         </tr>
     </thead>
     <tbody>
         <tr>
-            <td>{{sumaryData.name}}</td>
+            <td>{{summaryData.name}}</td>
             <td ng-repeat='entry in summaryData.downloads'>{{entry.downloads | number}}</td>
         </tr>
     </tbody>
 </table>
+
+<button class='btn btn-danger' ng-click='d3Test()'>D3 Test</button>

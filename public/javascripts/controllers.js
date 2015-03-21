@@ -5,15 +5,22 @@ app.controller('MainCtrl', function($scope, data) {
     // data.query(function(res,err){
     // 	$scope.everything = res;
     // });
+	
 
     $scope.resourceTest = function() {
+    	var today = new Date();
+    	var todayString = today.toISOString().slice(0,10);
+    	var lastWeek = new Date(today.setDate(today.getDate()-8));
+    	var lastWeekString = lastWeek.toISOString().slice(0,10);
+
+
         data.get({
                 //Hardocding for dev purposes, getting display right
                 name: 'Gulp',
-                startDate: '2015-01-01',
-                endDate: '2015-01-04'
+                startDate: lastWeekString,
+                endDate: todayString
             }, function(res, err) {
-                console.log('callback res ', res);
+                // console.log('callback res ', res);
                 $scope.data = res;
             }
 
