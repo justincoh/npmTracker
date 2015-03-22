@@ -40,17 +40,19 @@ app.directive('summaryTable', function() {
                         width = 960 - margin.left - margin.right,
                         height = 500 - margin.top - margin.bottom;
 
-                    var parseDate = d3.time.format("%Y-%m-%d"); //.parse;
+                    var parseDate = d3.time.format("%Y-%m-%d"); //.parse
 
                     var x = d3.time.scale()
-                        .range([0, width]);
+                        .range([0, width])
+                        
 
                     var y = d3.scale.linear()
                         .range([height, 0]);
 
                     var xAxis = d3.svg.axis()
                         .scale(x)
-                        .orient("bottom");
+                        .orient("bottom")
+                        .ticks(d3.time.day,1);
 
                     var yAxis = d3.svg.axis()
                         .scale(y)
@@ -58,7 +60,7 @@ app.directive('summaryTable', function() {
 
                     var line = d3.svg.line()
                         .x(function(d) {
-                        	console.log('x(d ',x(d.date), x)
+                        	// console.log('x(d ',x(d.date), x)
                             return x(d.date);
                         })
                         .y(function(d) {
@@ -76,10 +78,10 @@ app.directive('summaryTable', function() {
                     var data = scope.summaryData.downloads
                     data.forEach(function(d) {
                         d.date = new Date(d.date);
-                        // console.log('after ',d.date)
                     });
 
                     x.domain(d3.extent(data, function(d) {
+                    	console.log('in domain ',parseDate(d.date))
                         return d.date;
                     }));
                     y.domain(d3.extent(data, function(d) {
