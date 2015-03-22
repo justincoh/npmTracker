@@ -16,7 +16,9 @@ var packageSchema = new Schema({
             downloads: {type: Number, required:true},
             date: {type:Date,required:true}
     }],
-    totalDownloads: Number
+    totalDownloads: Number,
+    start: Date,
+    end: Date
 })
 
 //packageSchema.pre('save',function(){ write a hook to add to total Downloads})
@@ -24,11 +26,11 @@ var packageSchema = new Schema({
 //mongo docs:'without sort mongo does not guarantee order of query results'
 //so don't think sorting on insert serves any purpose
 //also need to convert them all to date objects, but do that in the route
-
+//also eventually need a pre-save hook to reset the start/end dates if necessary?
 
 var npmPackage = mongoose.model('Package', packageSchema);
 
 
 module.exports = {
-    "npmPackages": npmPackage
+    "npmPackage": npmPackage
 };

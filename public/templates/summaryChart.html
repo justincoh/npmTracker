@@ -1,0 +1,29 @@
+<style>
+
+.axis path,
+.axis line {
+  fill: none;
+  stroke: #000;
+  shape-rendering: crispEdges;
+}
+
+.x.axis path {
+  display: none;
+}
+.y.axis path {
+	display: none;
+}
+
+.line {
+  fill: none;
+  stroke: steelblue;
+  stroke-width: 1.5px;
+}
+
+</style>
+
+<p>{{summaryData}}</p>
+<br>
+<p>{{summaryData.downloads.length}}</p>
+<div id="chart-container"></div>
+<button class='btn btn-warning' ng-click='buildChart()'>Build Chart</button>
