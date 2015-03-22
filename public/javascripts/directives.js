@@ -7,16 +7,7 @@ app.directive('summaryTable', function() {
         scope: {
             summaryData: '='
         },
-        link: function(scope, element, attrs) {
-            scope.d3Test = function() {
-                var table = d3.select('table');
-                var color = "red";
-                if (table.style('background-color') === 'rgb(255, 0, 0)') {
-                    color = 'white';
-                }
-                table.transition().duration(1000).ease('bounce').style('background-color', color);
-            }
-        }
+        link: function(scope, element, attrs) {}
     }
 })
 
@@ -28,9 +19,7 @@ app.directive('summaryTable', function() {
             summaryData: '='
         },
         link: function(scope, element, attrs) {
-            //Need graph to generate only once data is present
-            // if (typeof summaryData !== 'undefined') {
-                scope.buildChart = function(data) {
+            scope.buildChart = function(data) {
                     var margin = {
                             top: 20,
                             right: 20,
@@ -44,7 +33,6 @@ app.directive('summaryTable', function() {
 
                     var x = d3.time.scale()
                         .range([0, width])
-                        
 
                     var y = d3.scale.linear()
                         .range([height, 0]);
@@ -52,7 +40,7 @@ app.directive('summaryTable', function() {
                     var xAxis = d3.svg.axis()
                         .scale(x)
                         .orient("bottom")
-                        .ticks(d3.time.day,1)
+                        .ticks(d3.time.day, 1)
                         .tickFormat(d3.time.format("%Y-%m-%d"));
 
                     var yAxis = d3.svg.axis()
@@ -61,7 +49,7 @@ app.directive('summaryTable', function() {
 
                     var line = d3.svg.line()
                         .x(function(d) {
-                        	// console.log('x(d ',x(d.date), x)
+                            // console.log('x(d ',x(d.date), x)
                             return x(d.date);
                         })
                         .y(function(d) {
@@ -74,15 +62,13 @@ app.directive('summaryTable', function() {
                         .append("g")
                         .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
 
-                    // d3.tsv("data.tsv", function(error, data) {
-
                     var data = scope.summaryData.downloads
                     data.forEach(function(d) {
                         d.date = new Date(d.date);
                     });
 
                     x.domain(d3.extent(data, function(d) {
-                    	console.log('in domain ',parseDate(d.date))
+                        console.log('in domain ', parseDate(d.date))
                         return d.date;
                     }));
                     y.domain(d3.extent(data, function(d) {
@@ -108,9 +94,7 @@ app.directive('summaryTable', function() {
                         .datum(data)
                         .attr("class", "line")
                         .attr("d", line);
-                    // });
                 }
-            // }
         }
     }
 })

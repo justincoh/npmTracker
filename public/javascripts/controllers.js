@@ -10,7 +10,7 @@ app.controller('MainCtrl', function($scope, data) {
     $scope.resourceTest = function() {
     	var today = new Date();
     	var todayString = today.toISOString().slice(0,10);
-    	var lastWeek = new Date(today.setDate(today.getDate()-8));
+    	var lastWeek = new Date(today.setDate(today.getDate()-7));
     	var lastWeekString = lastWeek.toISOString().slice(0,10);
 
 
