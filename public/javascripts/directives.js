@@ -40,7 +40,7 @@ app.directive('summaryTable', function() {
                         width = 960 - margin.left - margin.right,
                         height = 500 - margin.top - margin.bottom;
 
-                    // var parseDate = d3.time.format("%d-%b-%y").parse;
+                    var parseDate = d3.time.format("%Y-%m-%d"); //.parse;
 
                     var x = d3.time.scale()
                         .range([0, width]);
@@ -58,7 +58,7 @@ app.directive('summaryTable', function() {
 
                     var line = d3.svg.line()
                         .x(function(d) {
-                        	console.log('x(d ',x(d.date))
+                        	console.log('x(d ',x(d.date), x)
                             return x(d.date);
                         })
                         .y(function(d) {
@@ -74,14 +74,12 @@ app.directive('summaryTable', function() {
                     // d3.tsv("data.tsv", function(error, data) {
 
                     var data = scope.summaryData.downloads
-                    // data.forEach(function(d) {
-                    // 	console.log('before ',d.date)
-                    //     d.date = parseDate(d.date);
-                    //     console.log('after ',d.date)
-                    // });
+                    data.forEach(function(d) {
+                        d.date = new Date(d.date);
+                        // console.log('after ',d.date)
+                    });
 
                     x.domain(d3.extent(data, function(d) {
-                    	console.log(d.date)
                         return d.date;
                     }));
                     y.domain(d3.extent(data, function(d) {
