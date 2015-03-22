@@ -52,7 +52,8 @@ app.directive('summaryTable', function() {
                     var xAxis = d3.svg.axis()
                         .scale(x)
                         .orient("bottom")
-                        .ticks(d3.time.day,1);
+                        .ticks(d3.time.day,1)
+                        .tickFormat(d3.time.format("%Y-%m-%d"));
 
                     var yAxis = d3.svg.axis()
                         .scale(y)
