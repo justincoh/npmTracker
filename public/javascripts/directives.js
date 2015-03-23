@@ -8,17 +8,21 @@ app.directive('summaryTable', function(data) {
             summaryData: '='
         },
         link: function(scope, element, attrs) {
-            scope.rowHandler = function(){
-                //if they clicked the remove button, remove
-
+            scope.rowHandler = function(e){
                 var thisPackage = this.data.name;
-                console.log(this.data.name,thisPackage)
+                //if they clicked the remove button, remove
+                if(e.target.className.split(' ').indexOf('remove')!==-1){
+                    //classList was erroring, doesn't have indexOf method apparently
+                    data.removeFromData(thisPackage)
+                } else{
+                
                 d3.selectAll('.line').style('stroke-width','2px');
                 d3.select('.'+thisPackage)  //select returns first in DOM traversal order
                     .transition()
                     .duration(1000)
                     .ease('bounce')
                     .style('stroke-width','8px');
+                }
                 
             }
         }
@@ -53,7 +57,7 @@ app.directive('summaryTable', function(data) {
 
             
             scope.buildChart = function() {
-                // console.log('buildchart fired')
+                
                 d3.select('svg').remove(); //for re-rendering
 
                 var data = scope.summaryData;
@@ -93,6 +97,7 @@ app.directive('summaryTable', function(data) {
                     .scale(y)
                     .orient("left");
 
+                ////Leaving in case I feel like changing chart format
                 // var area = d3.svg.area()
                 //     .x(function(d) {
                 //         return x(d.date);
@@ -222,7 +227,7 @@ app.directive('summaryTable', function(data) {
                     legend.append('text')
                             .attr('x',legendRectSize+legendSpacing)
                             .attr('y',legendRectSize-legendSpacing)
-                            .text(function(d){console.log(d);return d});
+                            .text(function(d){return d});
 
                     //End Legend
 
