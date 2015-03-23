@@ -8,16 +8,17 @@
     <nav class="navbar navbar-default">
     </nav>
     <div class="container">
-                <h3>{{message}}</h3>
-                <!-- <p>{{everything}}</p> -->
+        <h3>{{message}}</h3>
         <div class="row">
-        	<summary-chart summary-data='everything'></summary-chart>
+            <summary-chart summary-data='packageData'></summary-chart>
             <div class="col-sm-4">
-                <button class="btn btn-primary" ng-click='resourceTest()'>Get Data</button>
+                <form ng-submit="getData()">
+                    <button class="btn btn-primary">Get Data</button>
+                    <input type='text' ng-model='packageName' placeholder='npm Package Name'></input>
+                </form>
             </div>
-            <summary-table summary-data='everything'></summary-table>
+            <summary-table summary-data='packageData'></summary-table>
             <!--this code-->
-            
         </div>
     </div>
 </body>

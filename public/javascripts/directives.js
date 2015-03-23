@@ -21,11 +21,23 @@ app.directive('summaryTable', function() {
                 // endDate: '='
         },
         link: function(scope, element, attrs) {
+            // scope.$on('update', function() {
+            //     scope.buildChart()
+            // });
+
+            //Still having async probs
+            scope.$watch("summaryData",function(){
+                console.log('scope$watch hit')
+                scope.buildChart();
+            })
 
             //Probably need to pass in width from scope also
             //dates should probably be independent of the data returned
             //axes should be built off of the request, fill in data after
+            //should this directive live update on data change?
             scope.buildChart = function() {
+                console.log('buildchart fired')
+                d3.select('svg').remove(); //for re-rendering
 
                 var data = scope.summaryData;
                 var color = d3.scale.category10();
@@ -42,13 +54,13 @@ app.directive('summaryTable', function() {
                         bottom: 30,
                         left: 75
                     },
-                    width = 1000 ,//- margin.left - margin.right,
+                    width = 1000, //- margin.left - margin.right,
                     height = 500 - margin.top - margin.bottom;
 
                 // var parseDate = d3.time.format("%Y-%m-%d"); //.parse
 
                 var x = d3.time.scale()
-                    .range([0, width+margin.right])
+                    .range([0, width + margin.right])
 
                 var y = d3.scale.linear()
                     .range([height, 0]);
@@ -88,7 +100,7 @@ app.directive('summaryTable', function() {
 
                 data.forEach(function(d) {
                     d.downloads.forEach(function(e) {
-                        e.date = new Date(e.date)
+                        e.date = new Date(e.date);
                     })
                 });
 
@@ -154,28 +166,34 @@ app.directive('summaryTable', function() {
                     .attr('class', 'npmPackage');
 
                 npmPackage.append('path')
-                    .datum(function(d) {return d})
+                    .datum(function(d) {
+                        return d;
+                    })
                     .attr('class', 'line')
-                    .attr('d', function(d) {return line(d.downloads)})
-                    .style("stroke", function(d) {return color(d.name)});
+                    .attr('d', function(d) {
+                        return line(d.downloads);
+                    })
+                    .style("stroke", function(d) {
+                        return color(d.name);
+                    });
 
                 npmPackage.append("text")
                     .datum(function(d) {
                         return {
                             name: d.name,
-                            // value: d.downloads[Math.floor(d.downloads.length/2)]
-                            value: d.downloads[d.downloads.length - 1]
+                            value: d.downloads[Math.floor(d.downloads.length/2)]
+                            // value: d.downloads[d.downloads.length - 2]
                         };
                     })
-                    .attr("transform", function(d) {    //Think of a better way to offset the name
-                        return "translate(" + x(d.value.date) + "," + y(d.value.downloads+2500) + ")";
+                    .attr("transform", function(d) { //Think of a better way to offset the name
+                        return "translate(" + x(d.value.date) + "," + y(d.value.downloads + 2500) + ")";
                     })
                     .attr("x", 3)
                     .attr("dy", ".35em")
                     .text(function(d) {
                         return d.name;
                     });
-            }
+            };
         }
     }
 })
