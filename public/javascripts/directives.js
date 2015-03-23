@@ -7,7 +7,21 @@ app.directive('summaryTable', function() {
         scope: {
             summaryData: '='
         },
-        link: function(scope, element, attrs) {}
+        link: function(scope, element, attrs) {
+            scope.rowHandler = function(){
+                var thisPackage = this.data.name;
+                //this.data.name gives npmPackage name
+                //now need it to pass to other directive
+                console.log(this.data.name,thisPackage)
+                d3.selectAll('.line').style('stroke-width','2px');
+                d3.select('.'+thisPackage)  //select returns first in DOM traversal order
+                    .transition()
+                    .duration(1000)
+                    .ease('bounce')
+                    .style('stroke-width','8px');
+                
+            }
+        }
     }
 })
 
@@ -172,7 +186,8 @@ app.directive('summaryTable', function() {
                     .datum(function(d) {
                         return d;
                     })
-                    .attr('class', 'line')
+                    .attr('class', function(d){return d.name+' line'})
+                    // .attr('class',function(d){return d.name})
                     .attr('d', function(d) {
                         return line(d.downloads);
                     })
