@@ -1,6 +1,6 @@
 'use strict';
 
-app.directive('summaryTable', function() {
+app.directive('summaryTable', function(data) {
     return {
         restrict: 'E',
         templateUrl: 'templates/summaryTable.html',
@@ -9,9 +9,9 @@ app.directive('summaryTable', function() {
         },
         link: function(scope, element, attrs) {
             scope.rowHandler = function(){
+                //if they clicked the remove button, remove
+
                 var thisPackage = this.data.name;
-                //this.data.name gives npmPackage name
-                //now need it to pass to other directive
                 console.log(this.data.name,thisPackage)
                 d3.selectAll('.line').style('stroke-width','2px');
                 d3.select('.'+thisPackage)  //select returns first in DOM traversal order

@@ -10,6 +10,7 @@
         <tr ng-repeat='data in summaryData' ng-click="rowHandler()">
             <td>{{data.name}}</td>
             <td ng-class='{{data.name}}' ng-repeat='entry in data.downloads'>{{entry.downloads | number}}</td>
+            <td><button type ='button' class='btn btn-xs btn-danger'><span class="glyphicon glyphicon-remove"></span></button>
         </tr>
     </tbody>
 </table>

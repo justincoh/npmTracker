@@ -27,10 +27,6 @@ app.controller('MainCtrl', function($scope, data) {
         }, function(res, err) {
             console.log('Get res ', res)
             data.addToData(res);
-            // $scope.packageData = data.getData();
-                // console.log('get err ',err)
-            // $scope.packageData.push(res);
-            // $scope.$broadcast('update')
         })
     }
 });
@@ -53,6 +49,9 @@ app.factory('data', function($resource,$rootScope) {
         addToData: function(object) {
             data.push(object);
             broadcast();
+        },
+        removeFromData: function(string){
+
         },
         resource: $resource('/data')
     }
