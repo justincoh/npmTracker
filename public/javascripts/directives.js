@@ -60,7 +60,8 @@ app.directive('summaryTable', function() {
                 // var parseDate = d3.time.format("%Y-%m-%d"); //.parse
 
                 var x = d3.time.scale()
-                    .range([0, width + margin.right])
+                    .range([0,width]);
+                    //Need to adjust both ranges TODO
 
                 var y = d3.scale.linear()
                     .range([height, 0]);
@@ -142,7 +143,7 @@ app.directive('summaryTable', function() {
                     return min;
                 };
                 var downloadMin = getMin(data);
-                y.domain([0, downloadMax * 1.2]);
+                y.domain([downloadMin*.75, downloadMax * 1.1]);
 
                 svg.append("g")
                     .attr("class", "x axis")
@@ -153,8 +154,8 @@ app.directive('summaryTable', function() {
                     .attr("class", "y axis")
                     .call(yAxis)
                     .append("text")
-                    .attr("transform", "rotate(-90)")
-                    .attr("y", 6)
+                    // .attr("transform", "rotate(-90)")
+                    .attr("y", -20) //"Downloads" offset from vertical
                     .attr("dy", ".71em")
                     .style("text-anchor", "end")
                     .text("Downloads");
