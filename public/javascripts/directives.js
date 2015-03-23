@@ -16,10 +16,23 @@ app.directive('summaryTable', function() {
         restrict: 'E',
         templateUrl: 'templates/summaryChart.html',
         scope: {
-            summaryData: '='
+            summaryData: '='//,
+            // startDate: '=',
+            // endDate: '='
         },
         link: function(scope, element, attrs) {
-            scope.buildChart = function(data) {
+            scope.buildChart = function() {
+
+                var data = scope.summaryData;
+                //dates should probably be independent of the data returned
+                //axes should be built off of the request, fill in data after
+
+                var dateRange = [];
+                scope.summaryData[0].downloads.forEach(function(el) {
+                    //HARDCODED to expect syncd dates
+                    //Adjust this to use scope variables instead
+                    dateRange.push(el.date)
+                });
                 var margin = {
                         top: 20,
                         right: 20,
@@ -71,45 +84,54 @@ app.directive('summaryTable', function() {
                     .append("g")
                     .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
 
-                var data = scope.summaryData.downloads;
                 data.forEach(function(d) {
-                    d.date = new Date(d.date);
+                    d.downloads.forEach(function(e){
+                        e.date = new Date(e.date)
+                    })
                 });
 
-                x.domain(d3.extent(data, function(d) {
+                // x.domain(d3.extent(data, function(d) {
+                //     return d.date;
+                // }));
+
+                x.domain(d3.extent(dateRange, function(d) {
                     //THIS RELIES ON SYNCd DATA
-                    return d.date;
+                    return new Date(d);
                 }));
 
-                var downloadMax = d3.max(data, function(d) {
-                    return d.downloads;
-                })
-                var downloadMin = d3.min(data, function(d) {
-                    return d.downloads;
-                })
+                // var downloadMax = d3.max(data, function(d) {
+                //     return d.downloads;
+                // })
+                // var downloadMin = d3.min(data, function(d) {
+                //     return d.downloads;
+                // })
 
                 //writing my own min/max
-                // var getMax = function(arr) {
-                //     var max = 0;
-                //     arr.forEach(function(el) {
-                //         if (el.downloads.downloads > max) {
-                //             max = el.downloads.downloads;
-                //         }
-                //     })
-                //     return max;
-                // }
+                var getMax = function(arr) {
+                    var max = 0;
+                    arr.forEach(function(npmPackage) {
+                        npmPackage.downloads.forEach(function(day){
+                            if(day.downloads > max){
+                                max=day.downloads;
+                            }
+                        })
+                    })
+                    return max;
+                }
 
-                // var downloadMax = getMax(data);
-                // var getMin = function(arr) {
-                //     var min = downloadMax;
-                //     arr.forEach(function(el) {
-                //         if (el.downloads.downloads < el) {
-                //             min = el.downloads.downloads;
-                //         }
-                //     })
-                //     return min;
-                // }
-                // var downloadMin = getMin(data);
+                var downloadMax = getMax(data);
+                var getMin = function(arr) {
+                    var min = downloadMax;
+                    arr.forEach(function(el) {
+                        if (el.downloads.downloads < el) {
+                            min = el.downloads.downloads;
+                        }
+                    })
+                    return min;
+                }
+                var downloadMin = getMin(data);
+                console.log("downloadMax ",downloadMax)
+                console.log("downloadMin ",downloadMin)
 
 
                 y.domain([0, downloadMax * 1.2]);

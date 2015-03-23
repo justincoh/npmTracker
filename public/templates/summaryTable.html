@@ -3,6 +3,7 @@
         <tr>
             <th>Package</th>
             <th ng-repeat='entry in summaryData[0].downloads'>{{entry.day}}</th>
+            <!-- needs to be a better way to do the interval, steal it from D3?-->
         </tr>
     </thead>
     <tbody>
