@@ -122,10 +122,12 @@ app.directive('summaryTable', function() {
                 var downloadMax = getMax(data);
                 var getMin = function(arr) {
                     var min = downloadMax;
-                    arr.forEach(function(el) {
-                        if (el.downloads.downloads < el) {
-                            min = el.downloads.downloads;
-                        }
+                    arr.forEach(function(npmPackage) {
+                        npmPackage.downloads.forEach(function(day){
+                            if(day.downloads < min){
+                                min=day.downloads;
+                            }
+                        })
                     })
                     return min;
                 }
