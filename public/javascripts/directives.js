@@ -51,6 +51,7 @@ app.directive('summaryTable', function() {
                 scope.buildChart();
             });
 
+            
             scope.buildChart = function() {
                 // console.log('buildchart fired')
                 d3.select('svg').remove(); //for re-rendering
@@ -195,22 +196,37 @@ app.directive('summaryTable', function() {
                         return color(d.name);
                     });
 
-                npmPackage.append("text")
-                    .datum(function(d) {
-                        return {
-                            name: d.name,
-                            value: d.downloads[Math.floor(d.downloads.length / 2)]
-                                // value: d.downloads[d.downloads.length - 2]
-                        };
-                    })
-                    .attr("transform", function(d) { //Think of a better way to offset the name
-                        return "translate(" + x(d.value.date) + "," + y(d.value.downloads + 2500) + ")";
-                    })
-                    .attr("x", 3)
-                    .attr("dy", ".35em")
-                    .text(function(d) {
-                        return d.name;
-                    });
+                    //Building Legend
+
+                    var legendRectSize = 18,
+                        legendSpacing = 4;
+
+                    var legend = svg.selectAll('.legend')
+                        .data(color.domain())
+                        .enter()
+                        .append('g')
+                        .attr('class','legend')
+                        .attr('transform',function(d,i){
+                            var height = legendRectSize + legendSpacing;
+                            var offset = height * color.domain().length / 2;
+                            // var horz = -2 * legendRectSize;
+                            var vert = i * height - offset;
+                            return 'translate(' + (width*.85) + ','+(vert+75)+')';
+                        });
+                    legend.append('rect')
+                        .attr('width',legendRectSize)
+                        .attr('height',legendRectSize)
+                        .style('fill',color)
+                        .style('stroke',color);
+                        
+                    legend.append('text')
+                            .attr('x',legendRectSize+legendSpacing)
+                            .attr('y',legendRectSize-legendSpacing)
+                            .text(function(d){console.log(d);return d});
+
+                    //End Legend
+
+
             };
         }
     }
