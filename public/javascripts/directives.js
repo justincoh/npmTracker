@@ -16,19 +16,19 @@ app.directive('summaryTable', function() {
         restrict: 'E',
         templateUrl: 'templates/summaryChart.html',
         scope: {
-            summaryData: '='//,
-            // startDate: '=',
-            // endDate: '='
+            summaryData: '=' //,
+                // startDate: '=',
+                // endDate: '='
         },
         link: function(scope, element, attrs) {
+
+            //Probably need to pass in width from scope also
+            //dates should probably be independent of the data returned
+            //axes should be built off of the request, fill in data after
             scope.buildChart = function() {
 
                 var data = scope.summaryData;
                 var color = d3.scale.category10();
-
-
-                //dates should probably be independent of the data returned
-                //axes should be built off of the request, fill in data after
 
                 var dateRange = [];
                 scope.summaryData[0].downloads.forEach(function(el) {
@@ -42,13 +42,13 @@ app.directive('summaryTable', function() {
                         bottom: 30,
                         left: 75
                     },
-                    width = 960 - margin.left - margin.right,
+                    width = 1000 ,//- margin.left - margin.right,
                     height = 500 - margin.top - margin.bottom;
 
-                var parseDate = d3.time.format("%Y-%m-%d"); //.parse
+                // var parseDate = d3.time.format("%Y-%m-%d"); //.parse
 
                 var x = d3.time.scale()
-                    .range([0, width])
+                    .range([0, width+margin.right])
 
                 var y = d3.scale.linear()
                     .range([height, 0]);
@@ -87,17 +87,13 @@ app.directive('summaryTable', function() {
                     .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
 
                 data.forEach(function(d) {
-                    d.downloads.forEach(function(e){
+                    d.downloads.forEach(function(e) {
                         e.date = new Date(e.date)
                     })
                 });
 
-                // x.domain(d3.extent(data, function(d) {
-                //     return d.date;
-                // }));
 
                 x.domain(d3.extent(dateRange, function(d) {
-                    //THIS RELIES ON SYNCd DATA
                     return new Date(d);
                 }));
 
@@ -108,31 +104,31 @@ app.directive('summaryTable', function() {
                 //     return d.downloads;
                 // })
 
-                //writing my own min/max
+                //writing my own min/max to index in
                 var getMax = function(arr) {
                     var max = 0;
                     arr.forEach(function(npmPackage) {
-                        npmPackage.downloads.forEach(function(day){
-                            if(day.downloads > max){
-                                max=day.downloads;
+                        npmPackage.downloads.forEach(function(day) {
+                            if (day.downloads > max) {
+                                max = day.downloads;
                             }
                         })
                     })
                     return max;
-                }
+                };
 
                 var downloadMax = getMax(data);
                 var getMin = function(arr) {
                     var min = downloadMax;
                     arr.forEach(function(npmPackage) {
-                        npmPackage.downloads.forEach(function(day){
-                            if(day.downloads < min){
-                                min=day.downloads;
+                        npmPackage.downloads.forEach(function(day) {
+                            if (day.downloads < min) {
+                                min = day.downloads;
                             }
                         })
                     })
                     return min;
-                }
+                };
                 var downloadMin = getMin(data);
                 y.domain([0, downloadMax * 1.2]);
 
@@ -155,13 +151,30 @@ app.directive('summaryTable', function() {
                 var npmPackage = svg.selectAll('npmPackage')
                     .data(data)
                     .enter().append('g')
-                    .attr('class','npmPackage');
-            
+                    .attr('class', 'npmPackage');
+
                 npmPackage.append('path')
-                    .datum(function(d){return d})
-                    .attr('class','line')
-                    .attr('d',function(d){return line(d.downloads)})
-                    .style("stroke", function(d) { return color(d.name)});
+                    .datum(function(d) {return d})
+                    .attr('class', 'line')
+                    .attr('d', function(d) {return line(d.downloads)})
+                    .style("stroke", function(d) {return color(d.name)});
+
+                npmPackage.append("text")
+                    .datum(function(d) {
+                        return {
+                            name: d.name,
+                            // value: d.downloads[Math.floor(d.downloads.length/2)]
+                            value: d.downloads[d.downloads.length - 1]
+                        };
+                    })
+                    .attr("transform", function(d) {    //Think of a better way to offset the name
+                        return "translate(" + x(d.value.date) + "," + y(d.value.downloads+2500) + ")";
+                    })
+                    .attr("x", 3)
+                    .attr("dy", ".35em")
+                    .text(function(d) {
+                        return d.name;
+                    });
             }
         }
     }
