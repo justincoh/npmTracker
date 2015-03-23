@@ -11,7 +11,7 @@ app.directive('summaryTable', function() {
     }
 })
 
-.directive('summaryChart', function() {
+.directive('summaryChart', function(data) {
     return {
         restrict: 'E',
         templateUrl: 'templates/summaryChart.html',
@@ -24,28 +24,28 @@ app.directive('summaryTable', function() {
                 //dates should probably be independent of the data returned
                 //axes should be built off of the request, fill in data after
         },
-        controller: function($scope, data) {
-            $scope.summaryData = data.getData();
+        link: function(scope,element,attrs) {
+            scope.summaryData = data.getData();
 
-            $scope.$watch('summaryData',function(){
+            scope.$watch('summaryData',function(){
                 //handles initial build, figure out why this doesn't re-render
                 //on data change
-                $scope.buildChart()
+                scope.buildChart()
             })
 
-            $scope.$on('update', function() {
-                $scope.buildChart();
+            scope.$on('update', function() {
+                scope.buildChart();
             });
 
-            $scope.buildChart = function() {
+            scope.buildChart = function() {
                 // console.log('buildchart fired')
                 d3.select('svg').remove(); //for re-rendering
 
-                var data = $scope.summaryData;
+                var data = scope.summaryData;
                 var color = d3.scale.category10();
 
                 var dateRange = [];
-                $scope.summaryData[0].downloads.forEach(function(el) {
+                scope.summaryData[0].downloads.forEach(function(el) {
                     //HARDCODED to expect syncd dates
                     //Adjust this to use scope variables instead
                     dateRange.push(el.date)
