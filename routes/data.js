@@ -24,18 +24,17 @@ router.get('/?', function(req, res) {
 
 
     if (typeof req.query.populate !== 'undefined') {
-        models.npmPackage.find(function(err, docs) {
-            console.log('database log ', arguments)
+        models.npmPackage.find(function(err, docs) { //limit this
             return res.json(docs);
         })
     } else {
-        var databasePromise = models.npmPackage.findOne({
+        var databasePromise = models.npmPackage.find({
                 name: packageName
             })
             .exec();
 
         databasePromise.then(function(docs) {
-            if (docs === null) {
+            if (docs.length === 0) {
                 //go to api and get it
                 var rangeByDate = 'https://api.npmjs.org/downloads/range/' + startDate + ':' + endDate + '/' + packageName;
                 request(rangeByDate, function(err, response) {

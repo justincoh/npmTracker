@@ -8,16 +8,18 @@
 }
 
 .x.axis path {
-  display: none;
+  /*display: none;*/
+  stroke: gray;
 }
 .y.axis path {
-	display: none;
+	/*display: none;*/
+	stroke: gray;
 }
 
 .line {
   fill: none;
   stroke: steelblue;
-  stroke-width: 1.5px;
+  stroke-width: 2px;
 }
 
 .area {
@@ -27,6 +29,6 @@
 </style>
 
 <br>
-<!-- <p>{{summaryData[0].downloads.length}}</p> -->
 <div id="chart-container"></div>
+<p>{{summaryData.length}} -here</p>
 <button class='btn btn-warning' ng-click='buildChart()'>Build Chart</button>

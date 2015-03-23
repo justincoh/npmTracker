@@ -7,11 +7,25 @@ app.directive('summaryTable', function() {
         scope: {
             summaryData: '='
         },
-        link: function(scope, element, attrs) {}
+        link: function(scope, element, attrs) {
+            scope.rowHandler = function(){
+                var thisPackage = this.data.name;
+                //this.data.name gives npmPackage name
+                //now need it to pass to other directive
+                console.log(this.data.name,thisPackage)
+                d3.selectAll('.line').style('stroke-width','2px');
+                d3.select('.'+thisPackage)  //select returns first in DOM traversal order
+                    .transition()
+                    .duration(1000)
+                    .ease('bounce')
+                    .style('stroke-width','8px');
+                
+            }
+        }
     }
 })
 
-.directive('summaryChart', function() {
+.directive('summaryChart', function(data) {
     return {
         restrict: 'E',
         templateUrl: 'templates/summaryChart.html',
@@ -19,13 +33,27 @@ app.directive('summaryTable', function() {
             summaryData: '=' //,
                 // startDate: '=',
                 // endDate: '='
-        },
-        link: function(scope, element, attrs) {
 
-            //Probably need to pass in width from scope also
-            //dates should probably be independent of the data returned
-            //axes should be built off of the request, fill in data after
+                //Probably need to pass in width from scope also
+                //dates should probably be independent of the data returned
+                //axes should be built off of the request, fill in data after
+        },
+        link: function(scope,element,attrs) {
+            scope.summaryData = data.getData();
+
+            scope.$watch('summaryData',function(){
+                //handles initial build, figure out why this doesn't re-render
+                //on data change
+                scope.buildChart()
+            })
+
+            scope.$on('update', function() {
+                scope.buildChart();
+            });
+
             scope.buildChart = function() {
+                // console.log('buildchart fired')
+                d3.select('svg').remove(); //for re-rendering
 
                 var data = scope.summaryData;
                 var color = d3.scale.category10();
@@ -42,13 +70,14 @@ app.directive('summaryTable', function() {
                         bottom: 30,
                         left: 75
                     },
-                    width = 1000 ,//- margin.left - margin.right,
+                    width = 1000, //- margin.left - margin.right,
                     height = 500 - margin.top - margin.bottom;
 
                 // var parseDate = d3.time.format("%Y-%m-%d"); //.parse
 
                 var x = d3.time.scale()
-                    .range([0, width+margin.right])
+                    .range([0, width]);
+                //Need to adjust both ranges TODO
 
                 var y = d3.scale.linear()
                     .range([height, 0]);
@@ -88,7 +117,7 @@ app.directive('summaryTable', function() {
 
                 data.forEach(function(d) {
                     d.downloads.forEach(function(e) {
-                        e.date = new Date(e.date)
+                        e.date = new Date(e.date);
                     })
                 });
 
@@ -130,7 +159,7 @@ app.directive('summaryTable', function() {
                     return min;
                 };
                 var downloadMin = getMin(data);
-                y.domain([0, downloadMax * 1.2]);
+                y.domain([downloadMin * .75, downloadMax * 1.1]);
 
                 svg.append("g")
                     .attr("class", "x axis")
@@ -141,8 +170,8 @@ app.directive('summaryTable', function() {
                     .attr("class", "y axis")
                     .call(yAxis)
                     .append("text")
-                    .attr("transform", "rotate(-90)")
-                    .attr("y", 6)
+                    // .attr("transform", "rotate(-90)")
+                    .attr("y", -20) //"Downloads" offset from vertical
                     .attr("dy", ".71em")
                     .style("text-anchor", "end")
                     .text("Downloads");
@@ -154,28 +183,35 @@ app.directive('summaryTable', function() {
                     .attr('class', 'npmPackage');
 
                 npmPackage.append('path')
-                    .datum(function(d) {return d})
-                    .attr('class', 'line')
-                    .attr('d', function(d) {return line(d.downloads)})
-                    .style("stroke", function(d) {return color(d.name)});
+                    .datum(function(d) {
+                        return d;
+                    })
+                    .attr('class', function(d){return d.name+' line'})
+                    // .attr('class',function(d){return d.name})
+                    .attr('d', function(d) {
+                        return line(d.downloads);
+                    })
+                    .style("stroke", function(d) {
+                        return color(d.name);
+                    });
 
                 npmPackage.append("text")
                     .datum(function(d) {
                         return {
                             name: d.name,
-                            // value: d.downloads[Math.floor(d.downloads.length/2)]
-                            value: d.downloads[d.downloads.length - 1]
+                            value: d.downloads[Math.floor(d.downloads.length / 2)]
+                                // value: d.downloads[d.downloads.length - 2]
                         };
                     })
-                    .attr("transform", function(d) {    //Think of a better way to offset the name
-                        return "translate(" + x(d.value.date) + "," + y(d.value.downloads+2500) + ")";
+                    .attr("transform", function(d) { //Think of a better way to offset the name
+                        return "translate(" + x(d.value.date) + "," + y(d.value.downloads + 2500) + ")";
                     })
                     .attr("x", 3)
                     .attr("dy", ".35em")
                     .text(function(d) {
                         return d.name;
                     });
-            }
+            };
         }
     }
 })

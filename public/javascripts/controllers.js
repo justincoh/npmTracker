@@ -2,32 +2,58 @@
 
 app.controller('MainCtrl', function($scope, data) {
     $scope.message = 'Concat and minify before deploying'
-    
-    data.query({populate:1},function(res,err){
-        $scope.everything = res;
+    $scope.$on('update',function(){
+        $scope.packageData = data.getData();
     });
-	
+    
+    data.resource.query({
+        populate: 1
+    }, function(res, err) {
+        data.setData(res);
+    });
 
-    $scope.resourceTest = function() {
-    	$scope.today = new Date();
-    	var todayString = $scope.today.toISOString().slice(0,10);
-    	$scope.lastWeek = new Date($scope.today.setDate($scope.today.getDate()-7));
-    	var lastWeekString = $scope.lastWeek.toISOString().slice(0,10);
 
-        data.get({
-                //Hardocding for dev purposes, getting display right
-                name: 'Gulp',
-                startDate: lastWeekString,
-                endDate: todayString
-            }, function(res, err) {
-                console.log('Get res ',res)
-                $scope.everything = res;
-            }
-        )
+    $scope.getData = function() {
+        $scope.today = new Date();
+        var todayString = $scope.today.toISOString().slice(0, 10);
+        $scope.lastWeek = new Date($scope.today.setDate($scope.today.getDate() - 7));
+        var lastWeekString = $scope.lastWeek.toISOString().slice(0, 10);
+
+        data.resource.get({
+            //Hardocding for dev purposes, getting display right
+            name: $scope.packageName,
+            startDate: lastWeekString,
+            endDate: todayString
+        }, function(res, err) {
+            console.log('Get res ', res)
+            data.addToData(res);
+            // $scope.packageData = data.getData();
+                // console.log('get err ',err)
+            // $scope.packageData.push(res);
+            // $scope.$broadcast('update')
+        })
     }
 });
 
 
-app.factory('data', function($resource) {
-    return $resource('/data');
+app.factory('data', function($resource,$rootScope) {
+    var data;
+    var broadcast = function(){
+        $rootScope.$broadcast('update');
+    };
+    return {
+        getData: function() {
+            return data;
+        },
+        setData: function(args) {
+            //args will always be an array based on backend structure
+            data = args;
+            broadcast();
+        },
+        addToData: function(object) {
+            data.push(object);
+            broadcast();
+        },
+        resource: $resource('/data')
+    }
 });

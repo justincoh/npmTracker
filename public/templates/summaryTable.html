@@ -7,11 +7,9 @@
         </tr>
     </thead>
     <tbody>
-        <tr ng-repeat='data in summaryData'>
+        <tr ng-repeat='data in summaryData' ng-click="rowHandler()">
             <td>{{data.name}}</td>
-            <td ng-repeat='entry in data.downloads'>{{entry.downloads | number}}</td>
+            <td ng-class='{{data.name}}' ng-repeat='entry in data.downloads'>{{entry.downloads | number}}</td>
         </tr>
     </tbody>
 </table>
-
-<button class='btn btn-danger' ng-click='d3Test()'>D3 Test</button>
