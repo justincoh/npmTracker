@@ -50,8 +50,11 @@ app.factory('data', function($resource,$rootScope) {
             data.push(object);
             broadcast();
         },
-        removeFromData: function(string){
-
+        removeFromData: function(packageName){
+            data = data.filter(function(thisPackage){
+                return thisPackage.name !==packageName;
+            });
+            broadcast();
         },
         resource: $resource('/data')
     }
