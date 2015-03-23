@@ -24,6 +24,9 @@ app.directive('summaryTable', function() {
             scope.buildChart = function() {
 
                 var data = scope.summaryData;
+                var color = d3.scale.category10();
+
+
                 //dates should probably be independent of the data returned
                 //axes should be built off of the request, fill in data after
 
@@ -71,7 +74,6 @@ app.directive('summaryTable', function() {
 
                 var line = d3.svg.line()
                     .x(function(d) {
-                        // console.log('x(d ',x(d.date), x)
                         return x(d.date);
                     })
                     .y(function(d) {
@@ -132,10 +134,6 @@ app.directive('summaryTable', function() {
                     return min;
                 }
                 var downloadMin = getMin(data);
-                console.log("downloadMax ",downloadMax)
-                console.log("downloadMin ",downloadMin)
-
-
                 y.domain([0, downloadMax * 1.2]);
 
                 svg.append("g")
@@ -153,28 +151,17 @@ app.directive('summaryTable', function() {
                     .style("text-anchor", "end")
                     .text("Downloads");
 
-                svg.append("path")
-                    .datum(data)
-                    .attr("class", "line")
-                    .attr("d", line);
 
-
-                //Trying to add multiple lines, work on color later
-
-
-                // data.forEach(function(el) {
-                //     svg.append("path")
-                //         .datum(el)
-                //         .attr("class", "line")
-                //         .attr("d", line);
-                // })
-
-
-
-                // svg.append("path")
-                //     .datum(data)
-                //     .attr("class", "area")
-                //     .attr("d", area);
+                var npmPackage = svg.selectAll('npmPackage')
+                    .data(data)
+                    .enter().append('g')
+                    .attr('class','npmPackage');
+            
+                npmPackage.append('path')
+                    .datum(function(d){return d})
+                    .attr('class','line')
+                    .attr('d',function(d){return line(d.downloads)})
+                    .style("stroke", function(d) { return color(d.name)});
             }
         }
     }
