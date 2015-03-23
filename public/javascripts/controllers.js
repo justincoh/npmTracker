@@ -3,16 +3,13 @@
 app.controller('MainCtrl', function($scope, data) {
     $scope.message = 'Concat and minify before deploying'
     $scope.$on('update',function(){
-        console.log('listener hit')
         $scope.packageData = data.getData();
-    })
+    });
+    
     data.resource.query({
         populate: 1
     }, function(res, err) {
         data.setData(res);
-        // $scope.packageData = data.getData();
-        // $scope.$broadcast('update');
-
     });
 
 

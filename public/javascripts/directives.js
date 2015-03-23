@@ -19,31 +19,33 @@ app.directive('summaryTable', function() {
             summaryData: '=' //,
                 // startDate: '=',
                 // endDate: '='
-        },
-        link: function(scope, element, attrs) {
-            // scope.$on('update', function() {
-            //     scope.buildChart()
-            // });
 
-            //Still having async probs
-            scope.$watch("summaryData",function(){
-                console.log('scope$watch hit')
-                scope.buildChart();
+                //Probably need to pass in width from scope also
+                //dates should probably be independent of the data returned
+                //axes should be built off of the request, fill in data after
+        },
+        controller: function($scope, data) {
+            $scope.summaryData = data.getData();
+
+            $scope.$watch('summaryData',function(){
+                //handles initial build, figure out why this doesn't re-render
+                //on data change
+                $scope.buildChart()
             })
 
-            //Probably need to pass in width from scope also
-            //dates should probably be independent of the data returned
-            //axes should be built off of the request, fill in data after
-            //should this directive live update on data change?
-            scope.buildChart = function() {
-                console.log('buildchart fired')
+            $scope.$on('update', function() {
+                $scope.buildChart();
+            });
+
+            $scope.buildChart = function() {
+                // console.log('buildchart fired')
                 d3.select('svg').remove(); //for re-rendering
 
-                var data = scope.summaryData;
+                var data = $scope.summaryData;
                 var color = d3.scale.category10();
 
                 var dateRange = [];
-                scope.summaryData[0].downloads.forEach(function(el) {
+                $scope.summaryData[0].downloads.forEach(function(el) {
                     //HARDCODED to expect syncd dates
                     //Adjust this to use scope variables instead
                     dateRange.push(el.date)
@@ -60,8 +62,8 @@ app.directive('summaryTable', function() {
                 // var parseDate = d3.time.format("%Y-%m-%d"); //.parse
 
                 var x = d3.time.scale()
-                    .range([0,width]);
-                    //Need to adjust both ranges TODO
+                    .range([0, width]);
+                //Need to adjust both ranges TODO
 
                 var y = d3.scale.linear()
                     .range([height, 0]);
@@ -143,7 +145,7 @@ app.directive('summaryTable', function() {
                     return min;
                 };
                 var downloadMin = getMin(data);
-                y.domain([downloadMin*.75, downloadMax * 1.1]);
+                y.domain([downloadMin * .75, downloadMax * 1.1]);
 
                 svg.append("g")
                     .attr("class", "x axis")
@@ -182,8 +184,8 @@ app.directive('summaryTable', function() {
                     .datum(function(d) {
                         return {
                             name: d.name,
-                            value: d.downloads[Math.floor(d.downloads.length/2)]
-                            // value: d.downloads[d.downloads.length - 2]
+                            value: d.downloads[Math.floor(d.downloads.length / 2)]
+                                // value: d.downloads[d.downloads.length - 2]
                         };
                     })
                     .attr("transform", function(d) { //Think of a better way to offset the name
