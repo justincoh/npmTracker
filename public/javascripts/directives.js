@@ -66,7 +66,7 @@ app.directive('summaryTable', function(data) {
                 var dateRange = [];
                 scope.summaryData[0].downloads.forEach(function(el) {
                     //HARDCODED to expect syncd dates
-                    //Adjust this to use scope variables instead
+                    //Adjust this to use scope variables instead TODO
                     dateRange.push(el.date)
                 });
                 var margin = {
@@ -132,14 +132,7 @@ app.directive('summaryTable', function(data) {
                     return new Date(d);
                 }));
 
-                // var downloadMax = d3.max(data, function(d) {
-                //     return d.downloads;
-                // })
-                // var downloadMin = d3.min(data, function(d) {
-                //     return d.downloads;
-                // })
-
-                //writing my own min/max to index in
+                //d3.max and min wont work since the array is nested
                 var getMax = function(arr) {
                     var max = 0;
                     arr.forEach(function(npmPackage) {
@@ -202,6 +195,7 @@ app.directive('summaryTable', function(data) {
                     });
 
                     //Building Legend
+                    //has to stay in here since it needs color.domain()
 
                     var legendRectSize = 18,
                         legendSpacing = 4;
