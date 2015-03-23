@@ -9,12 +9,13 @@
     </nav>
     <div class="container">
                 <h3>{{message}}</h3>
+                <p>{{everything}}</p>
         <div class="row">
-        	<summary-chart summary-data='data'></summary-chart>
+        	<summary-chart summary-data='everything'></summary-chart>
             <div class="col-sm-4">
                 <button class="btn btn-primary" ng-click='resourceTest()'>Get Data</button>
             </div>
-            <summary-table summary-data='data'></summary-table>
+            <summary-table summary-data='everything'></summary-table>
             <!--this code-->
             
         </div>

@@ -71,26 +71,48 @@ app.directive('summaryTable', function() {
                     .append("g")
                     .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
 
-                var data = scope.summaryData.downloads
+                var data = scope.summaryData.downloads;
                 data.forEach(function(d) {
                     d.date = new Date(d.date);
                 });
 
                 x.domain(d3.extent(data, function(d) {
-                    console.log('in domain ', parseDate(d.date))
+                    //THIS RELIES ON SYNCd DATA
                     return d.date;
                 }));
 
-                var downloadMax = d3.max(data,function(d){
+                var downloadMax = d3.max(data, function(d) {
                     return d.downloads;
                 })
-                var downloadMin = d3.min(data,function(d){
+                var downloadMin = d3.min(data, function(d) {
                     return d.downloads;
                 })
-                y.domain([0,downloadMax*1.2])
-                // y.domain(d3.extent(data, function(d) {
-                //     return d.downloads;
-                // }));
+
+                //writing my own min/max
+                // var getMax = function(arr) {
+                //     var max = 0;
+                //     arr.forEach(function(el) {
+                //         if (el.downloads.downloads > max) {
+                //             max = el.downloads.downloads;
+                //         }
+                //     })
+                //     return max;
+                // }
+
+                // var downloadMax = getMax(data);
+                // var getMin = function(arr) {
+                //     var min = downloadMax;
+                //     arr.forEach(function(el) {
+                //         if (el.downloads.downloads < el) {
+                //             min = el.downloads.downloads;
+                //         }
+                //     })
+                //     return min;
+                // }
+                // var downloadMin = getMin(data);
+
+
+                y.domain([0, downloadMax * 1.2]);
 
                 svg.append("g")
                     .attr("class", "x axis")
@@ -111,6 +133,19 @@ app.directive('summaryTable', function() {
                     .datum(data)
                     .attr("class", "line")
                     .attr("d", line);
+
+
+                //Trying to add multiple lines, work on color later
+
+
+                // data.forEach(function(el) {
+                //     svg.append("path")
+                //         .datum(el)
+                //         .attr("class", "line")
+                //         .attr("d", line);
+                // })
+
+
 
                 // svg.append("path")
                 //     .datum(data)

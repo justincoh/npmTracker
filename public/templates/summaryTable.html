@@ -2,13 +2,13 @@
     <thead>
         <tr>
             <th>Package</th>
-            <th ng-repeat='entry in summaryData.downloads'>{{entry.day}}</th>
+            <th ng-repeat='entry in summaryData[0].downloads'>{{entry.day}}</th>
         </tr>
     </thead>
     <tbody>
-        <tr>
-            <td>{{summaryData.name}}</td>
-            <td ng-repeat='entry in summaryData.downloads'>{{entry.downloads | number}}</td>
+        <tr ng-repeat='data in summaryData'>
+            <td>{{data.name}}</td>
+            <td ng-repeat='entry in data.downloads'>{{entry.downloads | number}}</td>
         </tr>
     </tbody>
 </table>

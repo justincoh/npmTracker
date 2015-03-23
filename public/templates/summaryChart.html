@@ -26,8 +26,8 @@
 
 </style>
 
-<p>{{summaryData}}</p>
+<!-- <p>{{summaryData}}</p> -->
 <br>
-<p>{{summaryData.downloads.length}}</p>
+<p>{{summaryData[0].downloads.length}}</p>
 <div id="chart-container"></div>
 <button class='btn btn-warning' ng-click='buildChart()'>Build Chart</button>
