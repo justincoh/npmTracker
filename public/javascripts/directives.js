@@ -16,23 +16,39 @@ app.directive('summaryTable', function() {
         restrict: 'E',
         templateUrl: 'templates/summaryChart.html',
         scope: {
-            summaryData: '='
+            summaryData: '=' //,
+                // startDate: '=',
+                // endDate: '='
         },
         link: function(scope, element, attrs) {
-            scope.buildChart = function(data) {
+
+            //Probably need to pass in width from scope also
+            //dates should probably be independent of the data returned
+            //axes should be built off of the request, fill in data after
+            scope.buildChart = function() {
+
+                var data = scope.summaryData;
+                var color = d3.scale.category10();
+
+                var dateRange = [];
+                scope.summaryData[0].downloads.forEach(function(el) {
+                    //HARDCODED to expect syncd dates
+                    //Adjust this to use scope variables instead
+                    dateRange.push(el.date)
+                });
                 var margin = {
                         top: 20,
                         right: 20,
                         bottom: 30,
                         left: 75
                     },
-                    width = 960 - margin.left - margin.right,
+                    width = 1000 ,//- margin.left - margin.right,
                     height = 500 - margin.top - margin.bottom;
 
-                var parseDate = d3.time.format("%Y-%m-%d"); //.parse
+                // var parseDate = d3.time.format("%Y-%m-%d"); //.parse
 
                 var x = d3.time.scale()
-                    .range([0, width])
+                    .range([0, width+margin.right])
 
                 var y = d3.scale.linear()
                     .range([height, 0]);
@@ -58,7 +74,6 @@ app.directive('summaryTable', function() {
 
                 var line = d3.svg.line()
                     .x(function(d) {
-                        // console.log('x(d ',x(d.date), x)
                         return x(d.date);
                     })
                     .y(function(d) {
@@ -71,26 +86,51 @@ app.directive('summaryTable', function() {
                     .append("g")
                     .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
 
-                var data = scope.summaryData.downloads
                 data.forEach(function(d) {
-                    d.date = new Date(d.date);
+                    d.downloads.forEach(function(e) {
+                        e.date = new Date(e.date)
+                    })
                 });
 
-                x.domain(d3.extent(data, function(d) {
-                    console.log('in domain ', parseDate(d.date))
-                    return d.date;
+
+                x.domain(d3.extent(dateRange, function(d) {
+                    return new Date(d);
                 }));
 
-                var downloadMax = d3.max(data,function(d){
-                    return d.downloads;
-                })
-                var downloadMin = d3.min(data,function(d){
-                    return d.downloads;
-                })
-                y.domain([0,downloadMax*1.2])
-                // y.domain(d3.extent(data, function(d) {
+                // var downloadMax = d3.max(data, function(d) {
                 //     return d.downloads;
-                // }));
+                // })
+                // var downloadMin = d3.min(data, function(d) {
+                //     return d.downloads;
+                // })
+
+                //writing my own min/max to index in
+                var getMax = function(arr) {
+                    var max = 0;
+                    arr.forEach(function(npmPackage) {
+                        npmPackage.downloads.forEach(function(day) {
+                            if (day.downloads > max) {
+                                max = day.downloads;
+                            }
+                        })
+                    })
+                    return max;
+                };
+
+                var downloadMax = getMax(data);
+                var getMin = function(arr) {
+                    var min = downloadMax;
+                    arr.forEach(function(npmPackage) {
+                        npmPackage.downloads.forEach(function(day) {
+                            if (day.downloads < min) {
+                                min = day.downloads;
+                            }
+                        })
+                    })
+                    return min;
+                };
+                var downloadMin = getMin(data);
+                y.domain([0, downloadMax * 1.2]);
 
                 svg.append("g")
                     .attr("class", "x axis")
@@ -107,15 +147,34 @@ app.directive('summaryTable', function() {
                     .style("text-anchor", "end")
                     .text("Downloads");
 
-                svg.append("path")
-                    .datum(data)
-                    .attr("class", "line")
-                    .attr("d", line);
 
-                // svg.append("path")
-                //     .datum(data)
-                //     .attr("class", "area")
-                //     .attr("d", area);
+                var npmPackage = svg.selectAll('npmPackage')
+                    .data(data)
+                    .enter().append('g')
+                    .attr('class', 'npmPackage');
+
+                npmPackage.append('path')
+                    .datum(function(d) {return d})
+                    .attr('class', 'line')
+                    .attr('d', function(d) {return line(d.downloads)})
+                    .style("stroke", function(d) {return color(d.name)});
+
+                npmPackage.append("text")
+                    .datum(function(d) {
+                        return {
+                            name: d.name,
+                            // value: d.downloads[Math.floor(d.downloads.length/2)]
+                            value: d.downloads[d.downloads.length - 1]
+                        };
+                    })
+                    .attr("transform", function(d) {    //Think of a better way to offset the name
+                        return "translate(" + x(d.value.date) + "," + y(d.value.downloads+2500) + ")";
+                    })
+                    .attr("x", 3)
+                    .attr("dy", ".35em")
+                    .text(function(d) {
+                        return d.name;
+                    });
             }
         }
     }

@@ -17,7 +17,7 @@
 .line {
   fill: none;
   stroke: steelblue;
-  stroke-width: 3.5px;
+  stroke-width: 1.5px;
 }
 
 .area {
@@ -26,8 +26,7 @@
 
 </style>
 
-<p>{{summaryData}}</p>
 <br>
-<p>{{summaryData.downloads.length}}</p>
+<!-- <p>{{summaryData[0].downloads.length}}</p> -->
 <div id="chart-container"></div>
 <button class='btn btn-warning' ng-click='buildChart()'>Build Chart</button>
