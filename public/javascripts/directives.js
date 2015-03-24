@@ -29,6 +29,7 @@ app.directive('summaryTable', function(data) {
     }
 })
 
+//going to need to break this into separate files, this is miserable
 .directive('summaryChart', function(data) {
     return {
         restrict: 'E',

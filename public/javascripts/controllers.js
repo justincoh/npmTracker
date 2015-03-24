@@ -13,10 +13,12 @@ app.controller('MainCtrl', function($scope, data) {
         data.setData(res);
     });
 
+    $scope.today = new Date();
+    $scope.lastWeek = new Date($scope.today.setDate($scope.today.getDate() - 10));
+    $scope.seedFrom2013 = new Date("2013-01-01");
+
     $scope.getData = function() {
-        $scope.today = new Date();
         var todayString = $scope.today.toISOString().slice(0, 10);
-        $scope.lastWeek = new Date($scope.today.setDate($scope.today.getDate() - 10));
         var lastWeekString = $scope.lastWeek.toISOString().slice(0, 10);
 
         data.resource.query({
