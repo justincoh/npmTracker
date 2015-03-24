@@ -43,8 +43,6 @@ app.directive('summaryTable', function(data) {
             //axes should be built off of the request, fill in data after
         },
         link: function(scope, element, attrs) {
-            // scope.summaryData = data.getData();
-            // scope.summaryData = data.data;
             scope.$watch('summaryData', function() {
                 //handles initial build, figure out why this doesn't re-render
                 //on data change
@@ -76,7 +74,7 @@ app.directive('summaryTable', function(data) {
                         left: 75
                     },
                     width = 1000, //- margin.left - margin.right,
-                    height = 500 - margin.top - margin.bottom;
+                    height = 500 //- margin.top - margin.bottom;
 
                 var x = d3.time.scale()
                     .range([0, width]);
@@ -105,12 +103,8 @@ app.directive('summaryTable', function(data) {
                 //     });
 
                 var line = d3.svg.line()
-                    .x(function(d) {
-                        return x(d.date);
-                    })
-                    .y(function(d) {
-                        return y(d.downloads);
-                    });
+                    .x(function(d) {return x(d.date);})
+                    .y(function(d) {return y(d.downloads);});
 
                 var svg = d3.select("#chart-container").append("svg")
                     // .attr("width", width + margin.left + margin.right)
