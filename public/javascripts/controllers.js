@@ -1,7 +1,7 @@
 'use strict';
 
 app.controller('MainCtrl', function($scope, data) {
-    $scope.message = 'Concat and minify before deploying'
+    $scope.message = 'config gulp'
     $scope.$on('update',function(){
         $scope.packageData = data.getData();
     });
@@ -25,7 +25,7 @@ app.controller('MainCtrl', function($scope, data) {
             startDate: lastWeekString,
             endDate: todayString
         }, function(res, err) {
-            console.log('Get res ', res)
+            // console.log('Get res ', res)
             data.addToData(res);
         })
     }
