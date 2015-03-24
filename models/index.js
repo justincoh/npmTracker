@@ -17,8 +17,8 @@ var packageSchema = new Schema({
             date: {type:Date,required:true}
     }],
     totalDownloads: Number,
-    start: Date,
-    end: Date
+    firstDate: Date,
+    lastDate: Date
 })
 
 //packageSchema.pre('save',function(){ write a hook to add to total Downloads})
