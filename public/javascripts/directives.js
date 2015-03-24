@@ -73,8 +73,8 @@ app.directive('summaryTable', function(data) {
                         bottom: 30,
                         left: 75
                     },
-                    width = 1000, //- margin.left - margin.right,
-                    height = 500 //- margin.top - margin.bottom;
+                    width = 1000 - margin.left - margin.right,
+                    height = 500 - margin.top - margin.bottom;
 
                 var x = d3.time.scale()
                     .range([0, width]);
@@ -157,7 +157,7 @@ app.directive('summaryTable', function(data) {
 
                 svg.append("g")
                     .attr("class", "x axis")
-                    .attr("transform", "translate(0," + height + ")")
+                    .attr("transform", "translate(-25," + height + ")")
                     .call(xAxis);
 
                 svg.append("g")
@@ -187,9 +187,11 @@ app.directive('summaryTable', function(data) {
                     .attr('d', function(d) {
                         return line(d.downloads);
                     })
-                    .style("stroke", function(d) {
+                    .style('stroke', function(d) {
                         return color(d.name);
-                    });
+                    })
+                    .style('stroke-linecap','round')
+                    .style('stroke-linejoin','bevel');
 
                 //Building Legend
                 //has to stay in here since it needs color.domain()
