@@ -1,9 +1,10 @@
 'use strict';
 
 app.controller('MainCtrl', function($scope, data) {
-    $scope.message = 'Concat and minify before deploying'
+    $scope.message = 'config gulp'
     $scope.$on('update',function(){
         $scope.packageData = data.getData();
+    console.log(typeof $scope.packageData[0].downloads[0].date)
     });
     
     data.resource.query({
@@ -12,28 +13,33 @@ app.controller('MainCtrl', function($scope, data) {
         data.setData(res);
     });
 
+    $scope.today = new Date();
+    $scope.twoDaysAgo = new Date($scope.today.setDate($scope.today.getDate() - 2));
+    $scope.lastWeek = new Date($scope.today.setDate($scope.today.getDate() - 10));
+    $scope.seedFrom2013 = new Date("2013-01-01");
 
+    console.log('date? ',$scope.twoDaysAgo)
     $scope.getData = function() {
-        $scope.today = new Date();
         var todayString = $scope.today.toISOString().slice(0, 10);
-        $scope.lastWeek = new Date($scope.today.setDate($scope.today.getDate() - 7));
+        var twoDaysAgoString = $scope.twoDaysAgo.toISOString().slice(0, 10); 
         var lastWeekString = $scope.lastWeek.toISOString().slice(0, 10);
 
-        data.resource.get({
-            //Hardocding for dev purposes, getting display right
+        data.resource.query({
+            //need query for isArray = true
+            //indexing to [0] in setter below
             name: $scope.packageName,
             startDate: lastWeekString,
-            endDate: todayString
+            endDate: twoDaysAgoString //for cron job dev
         }, function(res, err) {
-            console.log('Get res ', res)
-            data.addToData(res);
-        })
+            data.addToData(res[0]);
+        });
     }
 });
 
 
 app.factory('data', function($resource,$rootScope) {
     var data;
+    //data will always be an array based on backend structure
     var broadcast = function(){
         $rootScope.$broadcast('update');
     };
@@ -42,12 +48,20 @@ app.factory('data', function($resource,$rootScope) {
             return data;
         },
         setData: function(args) {
-            //args will always be an array based on backend structure
+            //Converting back to real dates, for filtering/sorting
+            args.forEach(function(npmPackage){
+                npmPackage.downloads.forEach(function(download){
+                    download.date = new Date(download.date);
+                });
+            });
             data = args;
             broadcast();
         },
-        addToData: function(object) {
-            data.push(object);
+        addToData: function(npmPackage) {
+            npmPackage.downloads.forEach(function(download){
+                download.date = new Date(download.date);
+            });
+            data.push(npmPackage);
             broadcast();
         },
         removeFromData: function(packageName){

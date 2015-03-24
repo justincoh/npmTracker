@@ -14,11 +14,11 @@ var packageSchema = new Schema({
     downloads: [{
             day: {type: String, required:true},
             downloads: {type: Number, required:true},
-            date: {type:Date,required:true}
+            date: {type:Date,required:true},
+            _id:false
     }],
     totalDownloads: Number,
-    start: Date,
-    end: Date
+    lastDate: String //use string to validate vs day
 })
 
 //packageSchema.pre('save',function(){ write a hook to add to total Downloads})

@@ -3,10 +3,10 @@ var express = require('express');
 var router = express.Router();
 var models = require('../models/index.js');
 var request = require('request');
+var dailyUpdate = require('../models/cronJob.js');
 
-//Example API Calls
-//Broken by day: https://api.npmjs.org/downloads/range/2014-01-03:2014-02-03/jquery
-
+//kicking off cron
+dailyUpdate.start();
 
 //need a good way to determine which dates are in the database
 //could pre-populate everything with certain amount for the project's sake
@@ -46,7 +46,7 @@ router.get('/?', function(req, res) {
                     });
                     //resetting obj for DB write
                     obj.downloads = downloads;
-                    console.log('Obj for write ', obj)
+                    // console.log('Obj for write ', obj)
                         // models.npmPackages.update({name:packageName},obj,{upsert:true},function(err,numAffected){
                         //  if(err){console.log('UPSERT ERR ',err)};
                         //  return res.json(obj);
@@ -66,6 +66,7 @@ router.get('/?', function(req, res) {
 
                 });
             } else {
+
                 return res.json(docs);
             }
         });
