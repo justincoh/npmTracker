@@ -3,6 +3,9 @@ var request = require('request');
 var models = require('./index.js');
 var async = require('async');
 
+//This cron Job REQUIRES that there is more than 1 package in the database as is
+//fortunately that isnt a problem
+
 //Needs to check daily for the 'lastday' data for all packages that are in the database
 var dailyUpdate = function() {
     models.npmPackage.find().select('name').exec(function(err, res) {
@@ -17,7 +20,7 @@ var dailyUpdate = function() {
         getYesterday(packageNames);
     })
 };
-dailyUpdate();
+
 
 var getYesterday = function(packageNameArray) {
     var packagesToGet = packageNameArray.join(',');
@@ -48,7 +51,8 @@ var updateRecords = function(packageObject) {
     
     async.map(packageArray, function(item, callback) {
         models.npmPackage.update({name: item['package']}, 
-	        {$addToSet: {
+	        {
+	        	$addToSet: {
 	                downloads: {
 	                    day: item.day,
 	                    date: item.date,
@@ -61,7 +65,17 @@ var updateRecords = function(packageObject) {
         );
     }, function(err, res) {
     	if(err){return console.error('CronJob Error: ',err)}
-        return console.log('CronJob Successful, packages updated: ', res);
+        return console.log('CronJob Successful, packages updated: ', res, Date());
     });
 
 }
+
+var databaseUpdate = new CronJob('0 0 12 * * *',dailyUpdate);
+
+
+//calling function here as well
+//Heroku kills dynos that aren't being used, but spins them up once per day
+//this guarantees a call at least once per day
+dailyUpdate();
+
+module.exports = databaseUpdate;
