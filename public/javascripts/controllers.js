@@ -14,11 +14,14 @@ app.controller('MainCtrl', function($scope, data) {
     });
 
     $scope.today = new Date();
+    $scope.twoDaysAgo = new Date($scope.today.setDate($scope.today.getDate() - 2));
     $scope.lastWeek = new Date($scope.today.setDate($scope.today.getDate() - 10));
     $scope.seedFrom2013 = new Date("2013-01-01");
 
+    console.log('date? ',$scope.twoDaysAgo)
     $scope.getData = function() {
         var todayString = $scope.today.toISOString().slice(0, 10);
+        var twoDaysAgoString = $scope.twoDaysAgo.toISOString().slice(0, 10); 
         var lastWeekString = $scope.lastWeek.toISOString().slice(0, 10);
 
         data.resource.query({
@@ -26,7 +29,7 @@ app.controller('MainCtrl', function($scope, data) {
             //indexing to [0] in setter below
             name: $scope.packageName,
             startDate: lastWeekString,
-            endDate: todayString
+            endDate: twoDaysAgoString //for cron job dev
         }, function(res, err) {
             data.addToData(res[0]);
         });

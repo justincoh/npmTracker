@@ -158,7 +158,7 @@ app.directive('summaryTable', function(data) {
 
                 svg.append("g")
                     .attr("class", "x axis")
-                    .attr("transform", "translate(-25," + height + ")")
+                    .attr("transform", "translate(-5," + height + ")")
                     .call(xAxis);
 
                 svg.append("g")
