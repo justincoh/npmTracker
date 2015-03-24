@@ -46,7 +46,7 @@ router.get('/?', function(req, res) {
                     });
                     //resetting obj for DB write
                     obj.downloads = downloads;
-                    console.log('Obj for write ', obj)
+                    // console.log('Obj for write ', obj)
                         // models.npmPackages.update({name:packageName},obj,{upsert:true},function(err,numAffected){
                         //  if(err){console.log('UPSERT ERR ',err)};
                         //  return res.json(obj);
@@ -66,6 +66,7 @@ router.get('/?', function(req, res) {
 
                 });
             } else {
+
                 return res.json(docs);
             }
         });
