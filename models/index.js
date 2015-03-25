@@ -12,13 +12,36 @@ var packageSchema = new Schema({
         required: true
     },
     downloads: [{
-            day: {type: String, required:true},
-            downloads: {type: Number, required:true},
-            date: {type:Date,required:true},
-            _id:false
+        day: {
+            type: String,
+            required: true
+        },
+        downloads: {
+            type: Number,
+            required: true
+        },
+        date: {
+            type: Date,
+            required: true
+        },
+        _id: false
     }],
     totalDownloads: Number,
     lastDate: String //use string to validate vs day
+})
+
+packageSchema.pre('save', function(next) {
+    //this is overkill 
+    //if !this.isNew figure out how to only get the new addition to the record
+    console.log('Hook args ',arguments)
+    console.log('hook this ',this)
+    var totalDownloads = 0;
+    this.downloads.forEach(function(record) {
+        totalDownloads += record.downloads;
+    });
+    this.totalDownloads = totalDownloads;
+    next();
+
 })
 
 //packageSchema.pre('save',function(){ write a hook to add to total Downloads})

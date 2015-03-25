@@ -76,6 +76,6 @@ var databaseUpdate = new CronJob('0 0 12 * * *',dailyUpdate);
 //calling function here as well
 //Heroku kills dynos that aren't being used, but spins them up once per day
 //this guarantees a call at least once per day
-dailyUpdate();
+// dailyUpdate();
 
 module.exports = databaseUpdate;
