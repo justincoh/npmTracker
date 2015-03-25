@@ -4,22 +4,28 @@ var uglify = require('gulp-uglify');
 var rename = require('gulp-rename');
 var del = require('del');
 
-// var paths = {
-// 	myScripts: '/public/javascripts/*.js'
-// };
-var concatted = 'concat.js'
+var myScripts ='public/javascripts/';
 
-gulp.task('scripts',function(){
-	return gulp.src('public/javascripts/*.js')
-		.pipe(concat(concatted))
-		.pipe(gulp.dest('public/javascripts'))
-		// .pipe(rename("fullApp.min.js"))
-		// .pipe(uglify())
-		// .pipe(gulp.dest('public/javascripts'))
+var files = {
+	concat:'concat.js',
+	min: 'full.min.js'
+};
+
+gulp.task('clean',function(){
+	del([myScripts+files.concat,myScripts+files.min],function(err,deletedFiles){
+		console.log('Deleted: ',deletedFiles.join(', '));
+		return;
+	});
 });
 
-gulp.task('vanillaClean',function(){
-	del('public/javascripts/'+concatted,function(err,deletedFiles){
-		console.log('Deleted: ',deletedFiles.join(', ');)
-	});
-})
+gulp.task('build',['clean'],function(){
+	//This is having an async error when the files already exist
+	//see how gulp actually handles the dependencies
+	return gulp.src(myScripts+'*.js')
+		.pipe(concat(files.concat))
+		.pipe(gulp.dest(myScripts))
+		.pipe(rename(files.min))
+		.pipe(uglify({mangle:false}))
+		.pipe(gulp.dest(myScripts))
+});
+
