@@ -3,10 +3,10 @@ var express = require('express');
 var router = express.Router();
 var models = require('../models/index.js');
 var request = require('request');
-var dailyUpdate = require('../models/cronJob.js');
+var cronJob = require('../models/cronJob.js').job;
 
 //kicking off cronJob
-// dailyUpdate.start();
+// cronJob.start();
 
 function getDates(startDate, stopDate) { 
     //for getting dates missing from DB

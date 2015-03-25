@@ -1,7 +1,7 @@
 'use strict';
 
 app.controller('MainCtrl', function($scope, data,populate) {
-    $scope.message = 'upcase, 5 tick/column limit'
+    $scope.message = 'upcase'
     $scope.$on('update',function(){
         $scope.packageData = data.getData();
     });

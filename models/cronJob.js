@@ -77,7 +77,7 @@ var updateRecords = function(packageObject) {
         models.npmPackage.recalculateTotals(); 
         models.npmPackage.recalculateMostRecent();
         //mongoose doesn't do pre('update'), so do it with a static
-        return console.log('CronJob Successful, packages updated: ', res, Date());
+        return console.log('Packages updated: ', res, Date());
     });
 
 }
@@ -88,14 +88,17 @@ var databaseUpdate = new CronJob('0 0 12 * * *',dailyUpdate);
 //calling function here also if it's been more than 1 day since update
 //Heroku kills dynos that aren't being used, but spins them up once per day
 //this guarantees a call at least once per day
-(function() {
-    models.npmPackage.findOne().select('mostRecentDate').exec(function(err, doc) {
-        var today = new Date();
-        var msPerDay = 86400000;
-        if (today - doc.mostRecentDate > msPerDay*2) {
-            dailyUpdate();
-        }
-    })
-})();
+// (function() {
+//     models.npmPackage.findOne().select('mostRecentDate').exec(function(err, doc) {
+//         var today = new Date();
+//         var msPerDay = 86400000;
+//         if (today - doc.mostRecentDate > msPerDay*2) {
+//             dailyUpdate();
+//         }
+//     })
+// })();
 
-module.exports = databaseUpdate;
+module.exports = {
+    'job':databaseUpdate,
+    'updateRecords':updateRecords
+}
