@@ -3,15 +3,15 @@ var request = require('request');
 var models = require('./index.js');
 var async = require('async');
 
-//This cron Job REQUIRES that there is more than 1 package in the database as is
-//fortunately that isnt a problem, should probably still refactor though
+//This Cron Job checks daily for the 'lastday' data for all packages that are in the database
+//It also REQUIRES that there is more than 1 package in the database as is
+//fortunately that isnt a problem, should probably still refactor though TODO
 
 //this will currently add a dupe one time only, figure out why TODO
 
 //Also add check to API return values TODO
 //it's sending mixed last-day dates depending on call/package
 
-//Needs to check daily for the 'lastday' data for all packages that are in the database
 
 var dailyUpdate = function() {
     models.npmPackage.find().select('name').exec(function(err, res) {
