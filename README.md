@@ -1,4 +1,4 @@
 # npmTracker
+###Tracking statistics for npm
+####Not hosted yet, still working.  Check back soon!
 
-##Not hosted yet, still working
-##info coming soon!
