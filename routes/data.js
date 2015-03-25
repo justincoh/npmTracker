@@ -6,7 +6,7 @@ var request = require('request');
 var dailyUpdate = require('../models/cronJob.js');
 
 //kicking off cron
-// dailyUpdate.start();
+dailyUpdate.start();
 
 //need a good way to determine which dates are in the database
 //could pre-populate everything with certain amount for the project's sake
