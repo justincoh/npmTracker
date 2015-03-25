@@ -4,9 +4,13 @@ var models = require('./index.js');
 var async = require('async');
 
 //This cron Job REQUIRES that there is more than 1 package in the database as is
-//fortunately that isnt a problem
+//fortunately that isnt a problem, should probably still refactor though
+
+//Also add check to API return values TODO
+//it's sending mixed last-day dates depending on call/package
 
 //Needs to check daily for the 'lastday' data for all packages that are in the database
+
 var dailyUpdate = function() {
     models.npmPackage.find().select('name').exec(function(err, res) {
         if (err !== null) {
@@ -64,7 +68,10 @@ var updateRecords = function(packageObject) {
 	        }
         );
     }, function(err, res) {
-    	if(err){return console.error('CronJob Error: ',err)}
+    	if(err){return console.error('CronJob Error: ',err);}
+        
+        // model.npmPackage.calculateTotals(); 
+        //mongoose doesn't do pre('update'), so do it with a static
         return console.log('CronJob Successful, packages updated: ', res, Date());
     });
 
@@ -79,3 +86,5 @@ var databaseUpdate = new CronJob('0 0 12 * * *',dailyUpdate);
 // dailyUpdate();
 
 module.exports = databaseUpdate;
+
+

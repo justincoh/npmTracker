@@ -1,6 +1,7 @@
 var mongoose = require('mongoose');
 mongoose.connect('mongodb://localhost/npmTracker');
 // mongoose.connect(process.env.MONGOLAB_URI)
+var async = require('async');
 var db = mongoose.connection;
 db.on('error', console.error.bind(console, 'connection error'));
 
@@ -27,29 +28,43 @@ var packageSchema = new Schema({
         _id: false
     }],
     totalDownloads: Number,
-    lastDate: String //use string to validate vs day
-})
+    lastDate: String //use string to validate vs day TODO
+});
 
 packageSchema.pre('save', function(next) {
-    //this is overkill 
-    //if !this.isNew figure out how to only get the new addition to the record
-    console.log('Hook args ',arguments)
-    console.log('hook this ',this)
-    var totalDownloads = 0;
-    this.downloads.forEach(function(record) {
-        totalDownloads += record.downloads;
-    });
-    this.totalDownloads = totalDownloads;
+    //going to have to do pre-update with a static, mongoose doesn't handle it
+    if (this.isNew) {
+        var totalDownloads = 0;
+        this.downloads.forEach(function(record) {
+            totalDownloads += record.downloads;
+        });
+        this.totalDownloads = totalDownloads;
+    }
     next();
 
-})
+});
 
-//packageSchema.pre('save',function(){ write a hook to add to total Downloads})
-//write post save hook to $sort the downloads array on date for ease of read?
+packageSchema.statics.recalculateTotals = function() {
+    this.find().exec(function(err, docsArray) {
+        async.each(docsArray, function(doc, callback) {
+            var newTotal = 0;
+            doc.downloads.forEach(function(entry){
+                newTotal+=entry.downloads;
+            });
+            doc.totalDownloads = newTotal;
+            doc.save();
+            callback(null);
+        }, function(err) {
+            if (err) {
+                return console.error('Error Updating Totals')
+            } 
+            return console.log('Totals Updated')
+        })
+    })
+}
+
+
 //mongo docs:'without sort mongo does not guarantee order of query results'
-//so don't think sorting on insert serves any purpose
-//also need to convert them all to date objects, but do that in the route
-//also eventually need a pre-save hook to reset the start/end dates if necessary?
 
 var npmPackage = mongoose.model('Package', packageSchema);
 

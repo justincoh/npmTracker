@@ -6,7 +6,7 @@ var request = require('request');
 var dailyUpdate = require('../models/cronJob.js');
 
 //kicking off cron
-dailyUpdate.start();
+// dailyUpdate.start();
 
 //need a good way to determine which dates are in the database
 //could pre-populate everything with certain amount for the project's sake
@@ -18,6 +18,7 @@ router.get('/?', function(req, res) {
     var endDate = req.query.endDate;
     var packageName = req.query.name;
 
+    console.log('req query ',req.query)
     //This isn't set up to handle initial resource.query
     //need to pass a param for initial load query
 
