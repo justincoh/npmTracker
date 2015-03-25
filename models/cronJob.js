@@ -72,7 +72,8 @@ var updateRecords = function(packageObject) {
     }, function(err, res) {
     	if(err){return console.error('CronJob Error: ',err);}
         
-        // model.npmPackage.calculateTotals(); 
+        models.npmPackage.recalculateTotals(); 
+        models.npmPackage.recalculateMostRecent();
         //mongoose doesn't do pre('update'), so do it with a static
         return console.log('CronJob Successful, packages updated: ', res, Date());
     });

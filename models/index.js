@@ -33,7 +33,7 @@ var packageSchema = new Schema({
         _id: false
     }],
     totalDownloads: Number,
-    lastUpdated: Date //use date to validate vs day TODO
+    mostRecentDate: Date //use date to validate vs day TODO
 });
 
 packageSchema.pre('save', function(next) {
@@ -44,6 +44,14 @@ packageSchema.pre('save', function(next) {
             totalDownloads += record.downloads;
         });
         this.totalDownloads = totalDownloads;
+    
+        var maxDate = new Date('2000-01-01');
+        this.downloads.forEach(function(record){
+            if(record.date > maxDate){
+                maxDate = record.date;
+            }
+        })
+        this.mostRecentDate = maxDate;
     }
     next();
 
@@ -60,13 +68,30 @@ packageSchema.statics.recalculateTotals = function() {
             doc.save();
             callback(null);
         }, function(err) {
-            if (err) {
-                return console.error('Error Updating Totals')
-            } 
-            return console.log('Totals Updated')
+            if (err) {return console.error('Error Updating Totals')} 
+                return console.log('Totals Updated')
         })
     })
-}
+};
+
+packageSchema.statics.recalculateMostRecent = function(){
+    this.find().exec(function(err,docsArray){
+        async.each(docsArray, function(doc,callback){
+            var maxDate = new Date('2000-01-01');
+            doc.downloads.forEach(function(entry){
+                if(entry.date > maxDate){
+                    maxDate = entry.date;
+                }
+            })
+            doc.mostRecentDate = maxDate;
+            doc.save();
+            callback(null);
+        },function(err){
+            if(err) {return console.error('Error Updating MostRecentDate')}  
+                return console.log('Most Recent Dates Updated')
+        })
+    })
+};
 
 
 //mongo docs:'without sort mongo does not guarantee order of query results'
