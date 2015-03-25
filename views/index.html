@@ -13,13 +13,15 @@
         <div class="row">
             <summary-chart summary-data='packageData'></summary-chart>
             <br>
-            <div class="col-sm-4">
+            <div class="col-lg-2 col-md-2 col-sm-3">
                 <form ng-submit="getData()">
                     <button class="btn btn-primary">Get Data</button>
                     <input type='text' ng-model='packageName' placeholder='npm Package Name'></input>
                 </form>
             </div>
-            <summary-table summary-data='packageData'></summary-table>
+            <div class="col-lg-4 col-md-4 col-sm-3">
+                <summary-table summary-data='packageData'></summary-table>
+            </div>
             <datepicker></datepicker>
         </div>
     </div>
@@ -28,7 +30,7 @@
 <script src="http://d3js.org/d3.v3.min.js" charset="utf-8"></script>
 <script src='modules/angular-resource/angular-resource.min.js'></script>
 <script src='bower/angular-bootstrap/ui-bootstrap.min.js'></script>
- <!--<script src='javascripts/full.min.js'></script> this makes almost 0 difference on this scale-->
- <script src='javascripts/app.js'></script>
+<!--<script src='javascripts/full.min.js'></script> this makes almost 0 difference on this scale-->
+<script src='javascripts/app.js'></script>
 <script src='javascripts/controllers.js'></script>
-<script src='javascripts/directives.js'></script> 
+<script src='javascripts/directives.js'></script>

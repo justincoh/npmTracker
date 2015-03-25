@@ -5,7 +5,9 @@ app.directive('summaryTable', function(data) {
         restrict: 'E',
         templateUrl: 'templates/summaryTable.html',
         scope: {
-            summaryData: '='
+            summaryData: '='//,
+            // startDate: '=',
+            // endDate: '='
         },
         link: function(scope, element, attrs) {
             scope.rowHandler = function(e) {
@@ -15,7 +17,6 @@ app.directive('summaryTable', function(data) {
                     //classList was erroring, doesn't have indexOf method apparently
                     data.removeFromData(thisPackage)
                 } else {
-
                     d3.selectAll('.line').transition()
                         .duration(500)
                         .ease('bounce')
@@ -90,7 +91,7 @@ app.directive('summaryTable', function(data) {
                 var xAxis = d3.svg.axis()
                     .scale(x)
                     .orient("bottom")
-                    .ticks(d3.time.day, 1)
+                    .ticks(d3.time.day, 3)  //make this reactive to date range passed
                     .tickFormat(d3.time.format("%Y-%m-%d"));
 
                 var yAxis = d3.svg.axis()

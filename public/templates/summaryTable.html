@@ -1,17 +1,35 @@
+<!-- {{summaryData[0]}}
+<div class="col-lg-10 col-md-10 col-sm-9">
+    <table class='table table-hover' style='overflow:scroll;'>
+        <thead>
+            <tr>
+                <th>Package</th>
+                <th ng-repeat='entry in summaryData[0].downloads'>{{entry.day}}</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr ng-repeat='data in summaryData' ng-click="rowHandler($event)">
+                <td>{{data.name}}</td>
+                <td ng-class='{{data.name}}' ng-repeat='entry in data.downloads'>{{entry.downloads | number}}</td>
+                <td>
+                    <button type='button' class='btn btn-xs btn-danger remove'><span class="glyphicon glyphicon-remove remove"></span></button>
+            </tr>
+        </tbody>
+    </table>
+</div> -->
 <table class='table table-hover'>
     <thead>
         <tr>
             <th>Package</th>
-            <th ng-repeat='entry in summaryData[0].downloads'>{{entry.day}}</th>
-            <!-- needs to be a better way to do the interval, steal it from D3?-->
-            <!--just use date.now and divide into intervals -->
+            <th>Downloads from startDate to End Date</th>
         </tr>
     </thead>
     <tbody>
         <tr ng-repeat='data in summaryData' ng-click="rowHandler($event)">
             <td>{{data.name}}</td>
-            <td ng-class='{{data.name}}' ng-repeat='entry in data.downloads'>{{entry.downloads | number}}</td>
-            <td><button type ='button' class='btn btn-xs btn-danger remove'><span class="glyphicon glyphicon-remove remove"></span></button>
+            <td ng-class='{{data.name}}' class='text-center'>{{data.totalDownloads | number}}
+                <button type='button' class='btn btn-xs btn-danger remove pull-right'><span class="glyphicon glyphicon-remove remove"></span></button>
+            </td>
         </tr>
     </tbody>
 </table>

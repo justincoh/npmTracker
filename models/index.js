@@ -33,7 +33,7 @@ var packageSchema = new Schema({
         _id: false
     }],
     totalDownloads: Number,
-    lastDate: String //use string to validate vs day TODO
+    lastUpdated: Date //use date to validate vs day TODO
 });
 
 packageSchema.pre('save', function(next) {
