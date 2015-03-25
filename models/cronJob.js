@@ -92,7 +92,7 @@ var databaseUpdate = new CronJob('0 0 12 * * *',dailyUpdate);
     models.npmPackage.findOne().select('mostRecentDate').exec(function(err, doc) {
         var today = new Date();
         var msPerDay = 86400000;
-        if (today - doc.mostRecentDate > msPerDay) {
+        if (today - doc.mostRecentDate > msPerDay*2) {
             dailyUpdate();
         }
     })

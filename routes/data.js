@@ -6,23 +6,51 @@ var request = require('request');
 var dailyUpdate = require('../models/cronJob.js');
 
 //kicking off cronJob
-dailyUpdate.start();
+// dailyUpdate.start();
+
+function getDates(startDate, stopDate) { 
+    //for getting dates missing from DB
+    var dateArray = [];
+    var currentDate = new Date(startDate);
+    while (currentDate <= stopDate) {
+        dateArray.push(currentDate)
+        currentDate.setDate(currentDate.getDate()+1)
+    }
+    return dateArray;
+};
+
+
+
 
 router.get('/?', function(req, res) {
     var startDate = req.query.startDate;
     var endDate = req.query.endDate;
     var packageName = req.query.name;
 
-    if (typeof req.query.populate !== 'undefined') {//checking initial page load
-        models.npmPackage.find(function(err, docs) { //limit this
-            return res.json(docs);
-        })
-    } 
+    // if (typeof req.query.populate !== 'undefined') {//checking initial page load
+    //     models.npmPackage.find().select('mostRecentDate name').exec(function(err,docs){
+    //         var today = new Date();
+    //         var msPerDay = 86400000;
+
+    //         // console.log('DOCS ',docs)
+
+    //         if(today - docs[0].mostRecentDate > (msPerDay*2)){ 
+    //         //docs[0] is fine, all packages should be in sync
+    //             console.log('too old')
+
+    //         } else (console.log(today - docs[0].mostRecentDate ))
+    //     })
+
+
+    //     models.npmPackage.find(function(err, docs) { //limit this
+    //         return res.json(docs);
+    //     })
+    // } 
 
 
 
 
-    else { //Every request other than page load
+    // else { //Every request other than page load
         var databasePromise = models.npmPackage.find({
                 name: packageName
             })
@@ -58,7 +86,7 @@ router.get('/?', function(req, res) {
                 return res.json(docs);
             }
         });
-    }
+    // }
 });
 
 
