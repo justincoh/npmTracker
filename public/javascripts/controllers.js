@@ -1,10 +1,9 @@
 'use strict';
 
 app.controller('MainCtrl', function($scope, data) {
-    $scope.message = 'config gulp'
+    $scope.message = 'upcase, 5 tick/column limit'
     $scope.$on('update',function(){
         $scope.packageData = data.getData();
-    console.log(typeof $scope.packageData[0].downloads[0].date)
     });
     
     data.resource.query({
@@ -14,11 +13,10 @@ app.controller('MainCtrl', function($scope, data) {
     });
 
     $scope.today = new Date();
-    $scope.twoDaysAgo = new Date($scope.today.setDate($scope.today.getDate() - 2));
+    $scope.twoDaysAgo = new Date($scope.today.setDate($scope.today.getDate() - 3));
     $scope.lastWeek = new Date($scope.today.setDate($scope.today.getDate() - 10));
-    $scope.seedFrom2013 = new Date("2013-01-01");
+    // $scope.seedFrom2013 = new Date("2013-01-01");
 
-    console.log('date? ',$scope.twoDaysAgo)
     $scope.getData = function() {
         var todayString = $scope.today.toISOString().slice(0, 10);
         var twoDaysAgoString = $scope.twoDaysAgo.toISOString().slice(0, 10); 
@@ -28,7 +26,7 @@ app.controller('MainCtrl', function($scope, data) {
             //need query for isArray = true
             //indexing to [0] in setter below
             name: $scope.packageName,
-            startDate: lastWeekString,
+            startDate: '2015-03-01',
             endDate: twoDaysAgoString //for cron job dev
         }, function(res, err) {
             data.addToData(res[0]);

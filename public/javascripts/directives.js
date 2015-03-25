@@ -16,12 +16,16 @@ app.directive('summaryTable', function(data) {
                     data.removeFromData(thisPackage)
                 } else {
 
-                    d3.selectAll('.line').style('stroke-width', '2px');
+                    d3.selectAll('.line').transition()
+                        .duration(500)
+                        .ease('bounce')
+                        .style('stroke-width', '2px');
                     d3.select('.' + thisPackage) //select returns first in DOM traversal order
                         .transition()
                         .duration(1000)
                         .ease('bounce')
-                        .style('stroke-width', '8px');
+                        .style('stroke-width', '8px')
+
                 }
 
             }
