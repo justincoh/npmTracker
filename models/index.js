@@ -1,6 +1,11 @@
 var mongoose = require('mongoose');
-mongoose.connect('mongodb://localhost/npmTracker');
-// mongoose.connect(process.env.MONGOLAB_URI)
+
+if(typeof process.env.MONGOLAB_URI!=='undefined'){
+   mongoose.connect(process.env.MONGOLAB_URI) 
+} else {
+    mongoose.connect('mongodb://localhost/npmTracker');    
+};
+
 var async = require('async');
 var db = mongoose.connection;
 db.on('error', console.error.bind(console, 'connection error'));
@@ -65,7 +70,7 @@ packageSchema.statics.recalculateTotals = function() {
 
 
 //mongo docs:'without sort mongo does not guarantee order of query results'
-
+//but does that apply to sub-document arrays?  They should be returned in order
 var npmPackage = mongoose.model('Package', packageSchema);
 
 
