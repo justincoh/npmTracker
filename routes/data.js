@@ -17,7 +17,12 @@ router.get('/?', function(req, res) {
         models.npmPackage.find(function(err, docs) { //limit this
             return res.json(docs);
         })
-    } else { //Everything request other than page load
+    } 
+
+
+
+
+    else { //Every request other than page load
         var databasePromise = models.npmPackage.find({
                 name: packageName
             })

@@ -29,6 +29,8 @@ var dailyUpdate = function() {
 
 
 var getYesterday = function(packageNameArray) {
+
+
     var packagesToGet = packageNameArray.join(',');
     var apiCall = 'https://api.npmjs.org/downloads/point/last-day/' + packagesToGet;
     //seriously friendly api
@@ -57,20 +59,20 @@ var updateRecords = function(packageObject) {
     
     async.map(packageArray, function(item, callback) {
         models.npmPackage.update({name: item['package']}, 
-	        {
-	        	$addToSet: {
-	                downloads: {
-	                    day: item.day,
-	                    date: item.date,
-	                    downloads: item.downloads
-	                }
-	            }
-	        }, function(err,doc){
-	        	callback(err,item['package']);
-	        }
+            {
+                $addToSet: {
+                    downloads: {
+                        day: item.day,
+                        date: item.date,
+                        downloads: item.downloads
+                    }
+                }
+            }, function(err,doc){
+                callback(err,item['package']);
+            }
         );
     }, function(err, res) {
-    	if(err){return console.error('CronJob Error: ',err);}
+        if(err){return console.error('CronJob Error: ',err);}
         
         models.npmPackage.recalculateTotals(); 
         models.npmPackage.recalculateMostRecent();
@@ -83,11 +85,17 @@ var updateRecords = function(packageObject) {
 var databaseUpdate = new CronJob('0 0 12 * * *',dailyUpdate);
 
 
-//calling function here as well
+//calling function here also if it's been more than 1 day since update
 //Heroku kills dynos that aren't being used, but spins them up once per day
 //this guarantees a call at least once per day
-dailyUpdate();
+(function() {
+    models.npmPackage.findOne().select('mostRecentDate').exec(function(err, doc) {
+        var today = new Date();
+        var msPerDay = 86400000;
+        if (today - doc.mostRecentDate > msPerDay) {
+            dailyUpdate();
+        }
+    })
+})();
 
 module.exports = databaseUpdate;
-
-

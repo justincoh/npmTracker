@@ -15,7 +15,6 @@ app.controller('MainCtrl', function($scope, data) {
     $scope.today = new Date();
     $scope.twoDaysAgo = new Date($scope.today.setDate($scope.today.getDate() - 3));
     $scope.lastWeek = new Date($scope.today.setDate($scope.today.getDate() - 10));
-    // $scope.seedFrom2013 = new Date("2013-01-01");
 
     $scope.getData = function() {
         var todayString = $scope.today.toISOString().slice(0, 10);
