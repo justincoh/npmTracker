@@ -1,64 +1,21 @@
-'use strict';
-
-app.directive('summaryTable', function(data) {
-    return {
-        restrict: 'E',
-        templateUrl: 'templates/summaryTable.html',
-        scope: {
-            summaryData: '='//,
-            // startDate: '=',
-            // endDate: '='
-        },
-        link: function(scope, element, attrs) {
-            scope.rowHandler = function(e) {
-                var thisPackage = this.data.name;
-                //if they clicked the remove button, remove
-                if (e.target.className.split(' ').indexOf('remove') !== -1) {
-                    //classList was erroring, doesn't have indexOf method apparently
-                    data.removeFromData(thisPackage)
-                } else {
-                    d3.selectAll('.line').transition()
-                        .duration(500)
-                        .ease('bounce')
-                        .style('stroke-width', '2px');
-                    d3.select('.' + thisPackage) //select returns first in DOM traversal order
-                        .transition()
-                        .duration(1000)
-                        .ease('bounce')
-                        .style('stroke-width', '8px')
-
-                }
-
-            }
-        }
-    }
-})
-
-//going to need to break this into separate files, this is miserable
-.directive('summaryChart', function(data) {
+app.directive('summaryChart', function(data) {
     return {
         restrict: 'E',
         templateUrl: 'templates/summaryChart.html',
         scope: {
-            summaryData: '=' //,
-                // startDate: '=',
-                // endDate: '='
-
-            //Probably need to pass in width from scope also
-            //dates should probably be independent of the data returned
-            //axes should be built off of the request, fill in data after
+            summaryData: '='
         },
         link: function(scope, element, attrs) {
             scope.$watch('summaryData', function() {
-                //handles initial build, figure out why this doesn't re-render
-                //on data change
-                scope.buildChart()
-            })
-
-            scope.$on('update', function() {
-                scope.buildChart();
+                //handling async
+                if (typeof scope.summaryData!=='undefined' && typeof scope.summaryData[0]!=='undefined') {
+                    scope.buildChart()
+                }
             });
 
+            // scope.$on('update', function() {
+            //     scope.buildChart();
+            // });
 
             scope.buildChart = function() {
 
@@ -68,6 +25,7 @@ app.directive('summaryTable', function(data) {
                 var color = d3.scale.category10();
 
                 var dateRange = [];
+                console.log('chartDir 33 SummaryData ', scope.summaryData)
                 scope.summaryData[0].downloads.forEach(function(el) {
                     //HARDCODED to expect syncd dates
                     //Adjust this to use scope variables instead TODO
@@ -91,30 +49,24 @@ app.directive('summaryTable', function(data) {
                 var xAxis = d3.svg.axis()
                     .scale(x)
                     .orient("bottom")
-                    .ticks(d3.time.day, 3)  //make this reactive to date range passed
+                    .ticks(d3.time.week, 2) //make this reactive to date range passed
                     .tickFormat(d3.time.format("%Y-%m-%d"));
 
                 var yAxis = d3.svg.axis()
                     .scale(y)
                     .orient("left");
 
-                ////Leaving in case I feel like changing chart format
-                // var area = d3.svg.area()
-                //     .x(function(d) {
-                //         return x(d.date);
-                //     })
-                //     .y0(height)
-                //     .y1(function(d) {
-                //         return y(d.downloads);
-                //     });
-
                 var line = d3.svg.line()
-                    .x(function(d) {return x(d.date);})
-                    .y(function(d) {return y(d.downloads);});
+                    .x(function(d) {
+                        return x(d.date);
+                    })
+                    .y(function(d) {
+                        return y(d.downloads);
+                    });
 
                 var svg = d3.select("#chart-container").append("svg")
                     // .attr("width", width + margin.left + margin.right)
-                    .attr('width','100%')
+                    .attr('width', '100%')
                     .attr("height", height + margin.top + margin.bottom)
                     .append("g")
                     .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
@@ -171,7 +123,7 @@ app.directive('summaryTable', function(data) {
                     .call(yAxis)
                     .append("text")
                     // .attr("transform", "rotate(-90)")
-                    .attr("y", -20)
+                    .attr("y", -10)
                     .attr("dy", ".71em")
                     .style("text-anchor", "end")
                     .text("Downloads");
@@ -196,12 +148,11 @@ app.directive('summaryTable', function(data) {
                     .style('stroke', function(d) {
                         return color(d.name);
                     })
-                    .style('stroke-linecap','round')
-                    .style('stroke-linejoin','bevel');
+                    .style('stroke-linecap', 'round')
+                    .style('stroke-linejoin', 'bevel');
 
                 //Building Legend
                 //has to stay in here since it needs color.domain()
-
                 var legendRectSize = 18,
                     legendSpacing = 4;
 
@@ -215,7 +166,7 @@ app.directive('summaryTable', function(data) {
                         var offset = height * color.domain().length / 2;
                         // var horz = -2 * legendRectSize;
                         var vert = i * height - offset;
-                        return 'translate(' + (width * .85) + ',' + (vert + 75) + ')';
+                        return 'translate(' + (width*1.05) + ',' + (vert+200) + ')';
                     });
                 legend.append('rect')
                     .attr('width', legendRectSize)
@@ -227,7 +178,7 @@ app.directive('summaryTable', function(data) {
                     .attr('x', legendRectSize + legendSpacing)
                     .attr('y', legendRectSize - legendSpacing)
                     .text(function(d) {
-                        return d
+                        return d[0].toUpperCase() + d.slice(1);
                     });
 
                 //End Legend

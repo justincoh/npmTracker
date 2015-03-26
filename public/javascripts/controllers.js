@@ -1,75 +1,85 @@
 'use strict';
 
-app.controller('MainCtrl', function($scope, data,populate) {
-    $scope.message = 'upcase'
-    $scope.$on('update',function(){
-        $scope.packageData = data.getData();
-    });
-    
+app.controller('MainCtrl', function($scope, data, populate) {
+    var namesInTable = [];
 
-    populate.query(function(res,err){
+    //fill Data
+    populate.query(function(res, err) {
         data.setData(res);
     });
 
-    $scope.today = new Date();
-    $scope.twoDaysAgo = new Date($scope.today.setDate($scope.today.getDate() - 3));
-    $scope.lastWeek = new Date($scope.today.setDate($scope.today.getDate() - 10));
+    $scope.$on('update', function() {
+        $scope.allData = data.getData();
+        $scope.packageData = $scope.allData.slice(0, 5);
+        namesInTable = [];
+        $scope.packageData.forEach(function(npmPackage) {
+            //for quicker lookup later
+            namesInTable.push(npmPackage.name);
+        })
+    });
 
+
+    $scope.today = new Date(); //Leaving on scope for sorting, for now
+    $scope.todayString = $scope.today.toISOString().slice(0, 10); //on scope for display
+
+    $scope.startDate = new Date('2015-01-01');
+    $scope.startDateString = $scope.startDate.toISOString().slice(0, 10);
     $scope.getData = function() {
-        var todayString = $scope.today.toISOString().slice(0, 10);
-        var twoDaysAgoString = $scope.twoDaysAgo.toISOString().slice(0, 10); 
-        var lastWeekString = $scope.lastWeek.toISOString().slice(0, 10);
-
         data.resource.query({
             //need query for isArray = true
             //indexing to [0] in setter below
             name: $scope.packageName,
-            startDate: '2015-03-01',
-            endDate: twoDaysAgoString //for cron job dev
+            startDate: $scope.startDateString,
+            endDate: $scope.todayString
         }, function(res, err) {
             data.addToData(res[0]);
         });
     }
-});
 
-app.factory('populate',function($resource){
-    return $resource('/populate');
-});
-
-
-app.factory('data', function($resource,$rootScope) {
-    var data;
-    //data will always be an array based on backend structure
-    var broadcast = function(){
-        $rootScope.$broadcast('update');
+    $scope.removePackage = function(packageName) {
+        //passed into table directive, removes pacakge and then
+        //re-appends it to the end of the array
+        var forRemoval = $scope.packageData.filter(function(el) {
+            return el.name === packageName;
+        })
+        data.removeFromData(packageName);
+        data.addToData(forRemoval[0]);
     };
-    return {
-        getData: function() {
-            return data;
-        },
-        setData: function(args) {
-            //Converting back to real dates, for filtering/sorting
-            args.forEach(function(npmPackage){
-                npmPackage.downloads.forEach(function(download){
-                    download.date = new Date(download.date);
-                });
-            });
-            data = args;
-            broadcast();
-        },
-        addToData: function(npmPackage) {
-            npmPackage.downloads.forEach(function(download){
-                download.date = new Date(download.date);
-            });
-            data.push(npmPackage);
-            broadcast();
-        },
-        removeFromData: function(packageName){
-            data = data.filter(function(thisPackage){
-                return thisPackage.name !==packageName;
-            });
-            broadcast();
-        },
-        resource: $resource('/data')
+
+
+    $scope.lineHighlight = function(packageName) {
+        d3.selectAll('.line').transition()
+            .duration(500)
+            .ease('bounce')
+            .style('stroke-width', '2px');
+        d3.select('.' + packageName) //select returns first in DOM traversal order
+            .transition()
+            .duration(1000)
+            .ease('bounce')
+            .style('stroke-width', '8px')
+    }
+
+
+    $scope.addToBeginning = function(e) {
+        var packageName = e.target.innerHTML.toLowerCase();
+        if (namesInTable.indexOf(packageName) !== -1) {
+            $scope.lineHighlight(packageName);
+            return;
+        }
+
+        var packageForRemoval = $scope.allData.filter(function(thisPackage) {
+            return thisPackage.name === packageName;
+        });
+        data.removeFromData(packageName);
+        data.addToBeginning(packageForRemoval[0]); //To keep it on list
+    }
+
+});
+
+
+app.filter('upcase', function() {
+    return function(input) {
+        if (!input) return;
+        return input[0].toUpperCase() + input.slice(1);
     }
 });
