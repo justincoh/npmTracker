@@ -25,8 +25,8 @@
         </tr>
     </thead>
     <tbody>
-        <tr ng-repeat='data in summaryData' ng-click="rowHandler($event)">
-            <td>{{data.name}}</td>
+        <tr ng-repeat="data in summaryData | orderBy: '-totalDownloads'" ng-click="rowHandler($event)">
+            <td>{{data.name | upcase}}</td>
             <td ng-class='{{data.name}}' class='text-center'>{{data.totalDownloads | number}}
                 <button type='button' class='btn btn-xs btn-danger remove pull-right'><span class="glyphicon glyphicon-remove remove"></span></button>
             </td>

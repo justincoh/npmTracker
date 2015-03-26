@@ -232,7 +232,7 @@ app.directive('summaryTable', function(data) {
                     .attr('x', legendRectSize + legendSpacing)
                     .attr('y', legendRectSize - legendSpacing)
                     .text(function(d) {
-                        return d
+                        return d[0].toUpperCase()+d.slice(1);
                     });
 
                 //End Legend

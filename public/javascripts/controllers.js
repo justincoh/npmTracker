@@ -106,3 +106,9 @@ app.factory('data', function($resource,$rootScope) {
         resource: $resource('/data')
     }
 });
+
+app.filter('upcase',function(){
+    return function(input){
+        return input[0].toUpperCase() + input.slice(1);
+    }
+});

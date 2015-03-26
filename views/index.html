@@ -8,8 +8,7 @@
     <nav class="navbar navbar-default">
     </nav>
     <div class="container">
-        <h3>{{message}}</h3>
-        <!-- <p>{{packageData}}</p> -->
+        <h3>Something Title-y</h3>
         <div class="row">
             <summary-chart summary-data='packageData'></summary-chart>
             <hr>
@@ -26,7 +25,7 @@
             </div>
             <div class="col-lg-8 col-md-6 col-sm-3">
                 <h5 class='text-center'>Available Packages</h5>
-                <button class='btn btn-default col-lg-3 col-md-4 col-sm-6 col-xs-6 selectors' ng-repeat="data in allData | orderBy: 'name' " ng-click='addToBeginning($event)'>{{::data.name}}</button>
+                <button class='btn btn-default col-lg-3 col-md-4 col-sm-6 col-xs-6 selectors' ng-repeat="data in allData | orderBy: 'name' " ng-click='addToBeginning($event)'>{{::data.name | upcase}}</button>
             </div>
             <!-- <datepicker></datepicker> -->
         </div>
