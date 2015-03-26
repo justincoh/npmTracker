@@ -1,10 +1,17 @@
 'use strict';
 
 app.controller('MainCtrl', function($scope, data,populate) {
+    var namesInTable =[];
     $scope.message = 'upcase'
     $scope.$on('update',function(){
         $scope.allData = data.getData();
         $scope.packageData = $scope.allData.slice(0,5);
+        namesInTable=[];
+        $scope.packageData.forEach(function(npmPackage){
+            //for quicker lookup
+            namesInTable.push(npmPackage.name);
+        })
+        console.log("namesInTable ",namesInTable)
     });
     
     populate.query(function(res,err){
@@ -29,12 +36,24 @@ app.controller('MainCtrl', function($scope, data,populate) {
     }
 
     $scope.removePackage = function(packageName){
-        console.log('packageName ',packageName)
+        //passed into table directive, removes pacakge and then
+        //re-appends it to the end of the array
         var forRemoval = $scope.packageData.filter(function(el){
-            console.log('EL NAME ',el.name)
             return el.name === packageName;
         })
-        console.log('HERE ',forRemoval)
+        data.removeFromData(packageName);
+        data.addToData(forRemoval[0]);
+    };
+
+    $scope.addToBeginning = function(e){
+        var packageName = e.target.innerHTML;
+        if(namesInTable.indexOf(packageName)!==-1){ return; }
+
+        var packageForRemoval = $scope.packageData.filter(function(thisPackage){
+            return thisPackage.name === e.target.innerHTML;
+        })
+        data.removeFromData(packageName);
+        data.addToBeginning(packageForRemoval[0]); //To keep it on lise
     }
 
 
@@ -70,16 +89,19 @@ app.factory('data', function($resource,$rootScope) {
             npmPackage.downloads.forEach(function(download){
                 download.date = new Date(download.date);
             });
-            data.unshift(npmPackage);   
-            //unshift because slice(0,5) is used in MainCtrl
-            //Not sure if push or unshift is faster, both probably copy (check)
+            data.push(npmPackage);            
             broadcast();
         },
         removeFromData: function(packageName){
             data = data.filter(function(thisPackage){
-                return thisPackage.name !==packageName;
+                return thisPackage.name !== packageName;
             });
+        },
+        addToBeginning: function(npmPackage){
+            //for display, im using slice(0,5)
+            data.unshift(npmPackage);
             broadcast();
+
         },
         resource: $resource('/data')
     }
