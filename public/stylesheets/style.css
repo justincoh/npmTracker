@@ -1,13 +1,21 @@
 body {
     padding: 50px;
     font: 14px "Lucida Grande", Helvetica, Arial, sans-serif;
-    background-image: radial-gradient( #EDF2F2, #BDBFBF);
+    background-image: radial-gradient( #FFFFFF, #9B9E9E);
 }
 
 a {
-    color: #00B7FF;
+    color: #000000;
+    text-decoration: underline;
 }
 
-.container {
+hr {
+	border: 0;
+    height: 2px;
+    background: #333;
+    background-image: -webkit-linear-gradient(left, #ccc, #333, #ccc);
+    background-image:    -moz-linear-gradient(left, #ccc, #333, #ccc);
+    background-image:     -ms-linear-gradient(left, #ccc, #333, #ccc);
+    background-image:      -o-linear-gradient(left, #ccc, #333, #ccc);
 
 }
