@@ -2,6 +2,7 @@ var request = require('request');
 var models = require('./index.js');
 var async=require('async');
 
+
 var getDateRange = function(packagesToGet,startDate,endDate) {
     console.log(startDate,endDate)
     var packageString = packagesToGet.join(',');
@@ -15,9 +16,10 @@ var getDateRange = function(packagesToGet,startDate,endDate) {
         for (key in obj) {
             if (obj.hasOwnProperty(key)) {
                 var thisPackage = obj[key];
-                console.log("thisPackage ",thisPackage)
-                //need to foreach in here and add a real date before passing 
-                //to the function below
+                //adding real date to each entry
+                thisPackage.downloads.forEach(function(entry){
+                    entry.date = new Date(entry.day);
+                })
                 thisPackage.day = thisPackage.end;
                 thisPackage.date = new Date(thisPackage.end);
                 delete thisPackage['start']; //wonder how costly this is vs copying
@@ -50,18 +52,17 @@ var updateRecords = function(packageObject) {
                     }
                 }
             }, function(err,doc){
-                console.log('ASYNC DOC ',doc,err)
                 callback(err,item['package']);
             }
         );
     }, function(err, res) {
         if(err){return console.error('helpers.js Error: ',err);}
-        
         models.npmPackage.recalculateTotals(); 
         models.npmPackage.recalculateMostRecent();
         //mongoose doesn't do pre('update'), so do it with a static
-        console.log('RES FROM HELPERS ',res)
-        return res.status(418).send();
+        // console.log('RES FROM HELPERS ',res, Date.now())
+        return res;
+        // return res.status(418).send();
     });
 
 }

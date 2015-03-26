@@ -3,6 +3,8 @@ var router = express.Router();
 var models = require('../models/index.js')
 var helpers = require('../models/helpers.js')
 var request = require('request');
+var async = require('async');
+var q = require('q');
 /* GET home page. */
 router.get('/', function(req, res) {
 
@@ -17,28 +19,39 @@ router.get('/populate', function(req, res) {
     models.npmPackage.find().exec(function(err, docs) {
         // console.log('FIND DOCS ',docs)
         // console.log(today - docs[0].mostRecentDate>msPerDay, today.getHours()>=12)
-        if (today - docs[0].mostRecentDate > msPerDay && today.getHours() >= 12) {
+        if (docs.length === 0) {
+            return res.status(200).send()
+        }
+
+        if ((today - docs[0].mostRecentDate > msPerDay * 2) && (today.getHours() >= 12)) {
+            console.log('timediff ', today - docs[0].mostRecentDate)
             var packageNameArray = [];
             var startDate = docs[0].mostRecentDate.toISOString().slice(0, 10);
             var endDate = today.toISOString().slice(0, 10);
 
-            docs.forEach(function(record){
-            	packageNameArray.push(record.name);
+            docs.forEach(function(record) {
+                packageNameArray.push(record.name);
             })
 
-            helpers.getDateRangeData(packageNameArray,startDate,endDate);
-            
-            
-
-
-            // request(apiCall,function(err,response){
-            // 	console.log('response ',response.body)
-            // })
-
-            // return res.json(docs);
+            async.series([
+                function(callback) {	//update the DB
+                    var defer = q.defer();
+                    q(helpers.getDateRangeData(packageNameArray, startDate, endDate)).then(function(value) {
+                        callback(null);
+                    });
+                },
+                function(callback) { //get all from DB after update
+                    models.npmPackage.find().exec(function(mongoErr, mongoRes) {
+                        callback(null, mongoRes)
+                    });
+                }
+            ], function(asyncErr, asyncRes) {
+                //send results to front end
+                console.log("ASYNC ",asyncRes)
+                return res.json(asyncRes[1]) //second element is the docs
+            });
 
         } else {
-
             //limit this to 5
             return res.json(docs);
         }
