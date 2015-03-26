@@ -1,21 +1,19 @@
 'use strict';
 
-app.controller('MainCtrl', function($scope, data) {
-    $scope.message = 'upcase, 5 tick/column limit'
+app.controller('MainCtrl', function($scope, data,populate) {
+    $scope.message = 'upcase'
     $scope.$on('update',function(){
         $scope.packageData = data.getData();
     });
     
-    data.resource.query({
-        populate: 1
-    }, function(res, err) {
+
+    populate.query(function(res,err){
         data.setData(res);
     });
 
     $scope.today = new Date();
     $scope.twoDaysAgo = new Date($scope.today.setDate($scope.today.getDate() - 3));
     $scope.lastWeek = new Date($scope.today.setDate($scope.today.getDate() - 10));
-    // $scope.seedFrom2013 = new Date("2013-01-01");
 
     $scope.getData = function() {
         var todayString = $scope.today.toISOString().slice(0, 10);
@@ -32,6 +30,10 @@ app.controller('MainCtrl', function($scope, data) {
             data.addToData(res[0]);
         });
     }
+});
+
+app.factory('populate',function($resource){
+    return $resource('/populate');
 });
 
 
