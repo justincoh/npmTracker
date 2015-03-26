@@ -1,3 +1,9 @@
+/*
+
+This is no longer being used, the DB is being checked on every
+page load since the only person checking it will probably be me.  
+Leaving here in case that changes
+
 var CronJob = require('cron').CronJob;
 var request = require('request');
 var models = require('./index.js');
@@ -102,3 +108,5 @@ module.exports = {
     'job':databaseUpdate,
     'updateRecords':updateRecords
 }
+
+*/
