@@ -5,17 +5,20 @@ app.directive('summaryTable', function(data) {
         restrict: 'E',
         templateUrl: 'templates/summaryTable.html',
         scope: {
-            summaryData: '='//,
-            // startDate: '=',
-            // endDate: '='
+            summaryData: '=',
+            startDate: '=',
+            endDate: '=',
+            removePackage: '&'
         },
         link: function(scope, element, attrs) {
             scope.rowHandler = function(e) {
                 var thisPackage = this.data.name;
+
                 //if they clicked the remove button, remove
                 if (e.target.className.split(' ').indexOf('remove') !== -1) {
                     //classList was erroring, doesn't have indexOf method apparently
-                    data.removeFromData(thisPackage)
+                    scope.removePackage({packageName: thisPackage})
+                    
                 } else {
                     d3.selectAll('.line').transition()
                         .duration(500)
@@ -26,9 +29,7 @@ app.directive('summaryTable', function(data) {
                         .duration(1000)
                         .ease('bounce')
                         .style('stroke-width', '8px')
-
                 }
-
             }
         }
     }
@@ -91,7 +92,7 @@ app.directive('summaryTable', function(data) {
                 var xAxis = d3.svg.axis()
                     .scale(x)
                     .orient("bottom")
-                    .ticks(d3.time.day, 3)  //make this reactive to date range passed
+                    .ticks(d3.time.week, 2)  //make this reactive to date range passed
                     .tickFormat(d3.time.format("%Y-%m-%d"));
 
                 var yAxis = d3.svg.axis()
@@ -198,6 +199,9 @@ app.directive('summaryTable', function(data) {
                     })
                     .style('stroke-linecap','round')
                     .style('stroke-linejoin','bevel');
+                    // .on('mouseover',function(d){
+                    //     console.log(d)
+                    // });
 
                 //Building Legend
                 //has to stay in here since it needs color.domain()

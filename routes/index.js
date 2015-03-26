@@ -23,7 +23,6 @@ router.get('/populate', function(req, res) {
             return res.status(200).send()
         }
 
-
         //find min most recentdate and go off of that
         var minDate = docs[0].mostRecentDate;
         docs.forEach(function(entry){
