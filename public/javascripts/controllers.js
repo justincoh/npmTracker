@@ -8,10 +8,9 @@ app.controller('MainCtrl', function($scope, data,populate) {
         $scope.packageData = $scope.allData.slice(0,5);
         namesInTable=[];
         $scope.packageData.forEach(function(npmPackage){
-            //for quicker lookup
+            //for quicker lookup later
             namesInTable.push(npmPackage.name);
         })
-        console.log("namesInTable ",namesInTable)
     });
     
     populate.query(function(res,err){
@@ -46,69 +45,22 @@ app.controller('MainCtrl', function($scope, data,populate) {
     };
 
     $scope.addToBeginning = function(e){
-        var packageName = e.target.innerHTML;
+        var packageName = e.target.innerHTML.toLowerCase();
         if(namesInTable.indexOf(packageName)!==-1){ return; }
 
-        var packageForRemoval = $scope.packageData.filter(function(thisPackage){
-            return thisPackage.name === e.target.innerHTML;
-        })
+        var packageForRemoval = $scope.allData.filter(function(thisPackage){
+            return thisPackage.name === packageName;
+        });
         data.removeFromData(packageName);
-        data.addToBeginning(packageForRemoval[0]); //To keep it on lise
+        data.addToBeginning(packageForRemoval[0]); //To keep it on list
     }
 
-
-
 });
 
-app.factory('populate',function($resource){
-    return $resource('/populate');
-});
-
-
-app.factory('data', function($resource,$rootScope) {
-    var data;
-    //data will always be an array based on backend structure
-    var broadcast = function(){
-        $rootScope.$broadcast('update');
-    };
-    return {
-        getData: function() {
-            return data;
-        },
-        setData: function(args) {
-            //Converting back to real dates, for filtering/sorting
-            args.forEach(function(npmPackage){
-                npmPackage.downloads.forEach(function(download){
-                    download.date = new Date(download.date);
-                });
-            });
-            data = args;
-            broadcast();
-        },
-        addToData: function(npmPackage) {
-            npmPackage.downloads.forEach(function(download){
-                download.date = new Date(download.date);
-            });
-            data.push(npmPackage);            
-            broadcast();
-        },
-        removeFromData: function(packageName){
-            data = data.filter(function(thisPackage){
-                return thisPackage.name !== packageName;
-            });
-        },
-        addToBeginning: function(npmPackage){
-            //for display, im using slice(0,5)
-            data.unshift(npmPackage);
-            broadcast();
-
-        },
-        resource: $resource('/data')
-    }
-});
 
 app.filter('upcase',function(){
     return function(input){
+        if(!input) return;
         return input[0].toUpperCase() + input.slice(1);
     }
 });

@@ -29,14 +29,15 @@
             </div>
             <!-- <datepicker></datepicker> -->
         </div>
-        <div ng-repeat='package in packageData'>{{package.name}}</div>
     </div>
 </body>
 <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.3.14/angular.min.js"></script>
 <script src="http://d3js.org/d3.v3.min.js" charset="utf-8"></script>
 <script src='modules/angular-resource/angular-resource.min.js'></script>
 <script src='bower/angular-bootstrap/ui-bootstrap.min.js'></script>
-<!--<script src='javascripts/full.min.js'></script> this makes almost 0 difference on this scale-->
+<!--<script src='javascripts/full.min.js'></script> put this back before deploying-->
 <script src='javascripts/app.js'></script>
+<script src='javascripts/factories.js'></script>
 <script src='javascripts/controllers.js'></script>
-<script src='javascripts/directives.js'></script>
+<script src='javascripts/chartDirective.js'></script>
+<script src='javascripts/tableDirective.js'></script>
