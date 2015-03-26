@@ -23,7 +23,17 @@ router.get('/populate', function(req, res) {
             return res.status(200).send()
         }
 
-        if ((today - docs[0].mostRecentDate > msPerDay * 2) && (today.getHours() >= 12)) {
+
+        //find min most recentdate and go off of that
+        var minDate = docs[0].mostRecentDate;
+        docs.forEach(function(entry){
+        	if(entry.mostRecentDate < minDate){
+        		minDate = entry.mostRecentDate;
+        	}
+        });
+        console.log("minDate ",minDate)
+
+        if ((today - minDate > msPerDay * 2) && (today.getHours() >= 12)) {
             console.log('timediff ', today - docs[0].mostRecentDate)
             var packageNameArray = [];
             var startDate = docs[0].mostRecentDate.toISOString().slice(0, 10);
@@ -43,11 +53,11 @@ router.get('/populate', function(req, res) {
                 function(callback) { //get all from DB after update
                     models.npmPackage.find().exec(function(mongoErr, mongoRes) {
                         callback(null, mongoRes)
+                        console.log('MONGORES ',mongoRes)
                     });
                 }
             ], function(asyncErr, asyncRes) {
                 //send results to front end
-                console.log("ASYNC ",asyncRes)
                 return res.json(asyncRes[1]) //second element is the docs
             });
 
