@@ -1,6 +1,6 @@
 npmTracker - Tracking downloads for npm modules
 ---
-I couldn't find a node package statistics page I liked, so I built one [here].  Thanks to the fine folks at [npm], the data is easy to get to.
+I couldn't find a node package statistics page I liked, so I built one [here] (with node, of course).  Thanks to the fine folks at [npm], the data is easy to get to.
 
 The page is pretty minimal at the moment, but I'm working on extensions:
 
