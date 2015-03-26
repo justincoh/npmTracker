@@ -2,13 +2,13 @@
 
 <head>
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.4/css/bootstrap.min.css">
+    <link rel="stylesheet" type="text/css" href="stylesheets/style.css">
 </head>
 
 <body ng-app='npmTracker' ng-controller='MainCtrl'>
-    <nav class="navbar navbar-default">
-    </nav>
+    <!-- <nav class="navbar navbar-default">
+    </nav> -->
     <div class="container">
-        <h3>Something Title-y</h3>
         <div class="row">
             <summary-chart summary-data='packageData'></summary-chart>
             <hr>
@@ -20,10 +20,10 @@
                     <input type='text' ng-model='packageName' placeholder='npm Package Name'></input>
                 </form>
             </div>
-            <div class="col-lg-4 col-md-6 col-sm-9">
-                <summary-table end-date='todayString' start-date='startDateString' summary-data='packageData' remove-package='removePackage(packageName)'></summary-table>
+            <div class="col-lg-4 col-md-6 col-sm-8">
+                <summary-table end-date='todayString' start-date='startDateString' summary-data='packageData' remove-package='removePackage(packageName)' line-highlight='lineHighlight(packageName)'></summary-table>
             </div>
-            <div class="col-lg-8 col-md-6 col-sm-3">
+            <div class="col-lg-8 col-md-6 col-sm-4">
                 <h5 class='text-center'>Available Packages</h5>
                 <button class='btn btn-default col-lg-3 col-md-4 col-sm-6 col-xs-6 selectors' ng-repeat="data in allData | orderBy: 'name' " ng-click='addToBeginning($event)'>{{::data.name | upcase}}</button>
             </div>

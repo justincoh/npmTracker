@@ -2,7 +2,12 @@
 
 app.controller('MainCtrl', function($scope, data, populate) {
     var namesInTable = [];
-    $scope.message = 'upcase'
+
+    //fill Data
+    populate.query(function(res, err) {
+        data.setData(res);
+    });
+
     $scope.$on('update', function() {
         $scope.allData = data.getData();
         $scope.packageData = $scope.allData.slice(0, 5);
@@ -13,9 +18,6 @@ app.controller('MainCtrl', function($scope, data, populate) {
         })
     });
 
-    populate.query(function(res, err) {
-        data.setData(res);
-    });
 
     $scope.today = new Date(); //Leaving on scope for sorting, for now
     $scope.todayString = $scope.today.toISOString().slice(0, 10); //on scope for display
@@ -44,18 +46,24 @@ app.controller('MainCtrl', function($scope, data, populate) {
         data.addToData(forRemoval[0]);
     };
 
+
+    $scope.lineHighlight = function(packageName) {
+        d3.selectAll('.line').transition()
+            .duration(500)
+            .ease('bounce')
+            .style('stroke-width', '2px');
+        d3.select('.' + packageName) //select returns first in DOM traversal order
+            .transition()
+            .duration(1000)
+            .ease('bounce')
+            .style('stroke-width', '8px')
+    }
+
+
     $scope.addToBeginning = function(e) {
         var packageName = e.target.innerHTML.toLowerCase();
         if (namesInTable.indexOf(packageName) !== -1) {
-            d3.selectAll('.line').transition()
-                .duration(500)
-                .ease('bounce')
-                .style('stroke-width', '2px');
-            d3.select('.' + packageName) //select returns first in DOM traversal order
-                .transition()
-                .duration(1000)
-                .ease('bounce')
-                .style('stroke-width', '8px')
+            $scope.lineHighlight(packageName);
             return;
         }
 
