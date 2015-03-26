@@ -30,7 +30,6 @@ app.directive('summaryChart', function(data) {
                 var color = d3.scale.category10();
 
                 var dateRange = [];
-                console.log('chartDir 33 SummaryData ', scope.summaryData)
                 scope.summaryData[0].downloads.forEach(function(el) {
                     //HARDCODED to expect syncd dates
                     //Adjust this to use scope variables instead TODO
