@@ -1,12 +1,12 @@
 var request = require('request');
 var models = require('./index.js');
-var async=require('async');
+var async = require('async');
+var q = require('q');
 
-
-var getDateRange = function(packagesToGet,startDate,endDate) {
-    console.log(startDate,endDate)
+var getDateRange = function(packagesToGet, startDate, endDate) {
+    console.log(startDate, endDate)
     var packageString = packagesToGet.join(',');
-    var apiCall = 'https://api.npmjs.org/downloads/range/'+startDate+':'+endDate+'/' + packageString;
+    var apiCall = 'https://api.npmjs.org/downloads/range/' + startDate + ':' + endDate + '/' + packageString;
     //seriously friendly api
     console.log(apiCall)
 
@@ -17,7 +17,7 @@ var getDateRange = function(packagesToGet,startDate,endDate) {
             if (obj.hasOwnProperty(key)) {
                 var thisPackage = obj[key];
                 //adding real date to each entry
-                thisPackage.downloads.forEach(function(entry){
+                thisPackage.downloads.forEach(function(entry) {
                     entry.date = new Date(entry.day);
                 })
                 thisPackage.day = thisPackage.end;
@@ -36,33 +36,52 @@ var updateRecords = function(packageObject) {
     var packageArray = Object.keys(packageObject).map(function(k) {
         return packageObject[k];
     });
-    
-    
+
+
     async.map(packageArray, function(item, callback) {
 
         // console.log('packageArray ',packageArray)
         // console.log('ITEM.downloads ',item.downloads)
         //looks like i need to nest async calls, itm.downloads is an array also
-        models.npmPackage.update({name: item['package']}, 
-            {
-                $addToSet: {    //Use $push $each, just double check your dates first
-                    downloads: {
-                        $each: item.downloads
+        models.npmPackage.update({
+            name: item['package']
+        }, {
+            $addToSet: { //Use $push $each, just double check your dates first
+                downloads: {
+                    $each: item.downloads
                         //$sort: {date:1}
-                    }
                 }
-            }, function(err,doc){
-                callback(err,item['package']);
             }
-        );
+        }, function(err, doc) {
+            callback(err, item['package']);
+        });
     }, function(err, res) {
-        if(err){return console.error('helpers.js Error: ',err);}
-        models.npmPackage.recalculateTotals(); 
-        models.npmPackage.recalculateMostRecent();
-        //mongoose doesn't do pre('update'), so do it with a static
-        // console.log('RES FROM HELPERS ',res, Date.now())
-        return res;
-        // return res.status(418).send();
+        if (err) {
+            return console.error('helpers.js Error: ', err);
+        }
+
+        async.parallel([
+                function(callback) {
+                    q(models.npmPackage.recalculateTotals()).then(function() {
+                        callback(null);
+                    });
+                },
+                function(callback) {
+                    q(models.npmPackage.recalculateMostRecent()).then(function(){
+                        callback(null);
+                    })
+
+                }
+            ], function(asyncErr,asyncRes) {
+                return{
+                    err:asyncErr,
+                    res:asyncRes
+                };
+            })
+            //this cant return till these are all done
+
+
+
     });
 
 }

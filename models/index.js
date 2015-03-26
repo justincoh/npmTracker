@@ -69,6 +69,7 @@ packageSchema.statics.recalculateTotals = function() {
             callback(null);
         }, function(err) {
             if (err) {return console.error('Error Updating Totals')} 
+            return 'Totals Recalculated';
         })
     })
 };
@@ -86,7 +87,8 @@ packageSchema.statics.recalculateMostRecent = function(){
             doc.save();
             callback(null);
         },function(err){
-            if(err) {return console.error('Error Updating MostRecentDate')}  
+            if(err) {return console.error('Error Updating MostRecentDate')} 
+            return 'Dates Recalculated' ;
         })
     })
 };
