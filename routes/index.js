@@ -5,20 +5,19 @@ var helpers = require('../models/helpers.js')
 var request = require('request');
 var async = require('async');
 var q = require('q');
+
 /* GET home page. */
 router.get('/', function(req, res) {
 
     return res.render('index')
 });
 
-
+//On page load
 router.get('/populate', function(req, res) {
     var msPerDay = 86400000;
     var today = new Date();
 
     models.npmPackage.find().exec(function(err, docs) {
-        // console.log('FIND DOCS ',docs)
-        // console.log(today - docs[0].mostRecentDate>msPerDay, today.getHours()>=12)
         if (docs.length === 0) {
             return res.status(200).send()
         }
@@ -65,18 +64,7 @@ router.get('/populate', function(req, res) {
             return res.json(docs);
         }
     });
-})
-
-
-
-
-
-
-
-
-
-
-
+});
 
 
 module.exports = router;
