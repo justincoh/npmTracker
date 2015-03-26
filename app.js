@@ -54,7 +54,6 @@ app.use(function(err, req, res, next) {
         message: err.message,
         error: {}
     });
-    // return res.json({message: err.message,error:err})
 });
 
 
