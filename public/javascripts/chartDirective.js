@@ -35,7 +35,7 @@ app.directive('summaryChart', function(data) {
                         top: 20,
                         right: 20,
                         bottom: 30,
-                        left: 75
+                        left: 90
                     },
                     width = 1000 - margin.left - margin.right,
                     height = 500 - margin.top - margin.bottom;
@@ -122,8 +122,9 @@ app.directive('summaryChart', function(data) {
                     .attr("class", "y axis")
                     .call(yAxis)
                     .append("text")
-                    // .attr("transform", "rotate(-90)")
-                    .attr("y", -10)
+                    .attr("transform", "rotate(-90)")
+                    .attr("y", -85)
+                    .attr('x',-175)
                     .attr("dy", ".71em")
                     .style("text-anchor", "end")
                     .text("Downloads");
