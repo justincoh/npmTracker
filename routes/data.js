@@ -3,90 +3,51 @@ var express = require('express');
 var router = express.Router();
 var models = require('../models/index.js');
 var request = require('request');
-var cronJob = require('../models/cronJob.js').job;
+// var cronJob = require('../models/cronJob.js').job;
 
 //kicking off cronJob
 // cronJob.start();
-
-function getDates(startDate, stopDate) { 
-    //for getting dates missing from DB
-    var dateArray = [];
-    var currentDate = new Date(startDate);
-    while (currentDate <= stopDate) {
-        dateArray.push(currentDate)
-        currentDate.setDate(currentDate.getDate()+1)
-    }
-    return dateArray;
-};
-
-
-
 
 router.get('/?', function(req, res) {
     var startDate = req.query.startDate;
     var endDate = req.query.endDate;
     var packageName = req.query.name;
 
-    // if (typeof req.query.populate !== 'undefined') {//checking initial page load
-    //     models.npmPackage.find().select('mostRecentDate name').exec(function(err,docs){
-    //         var today = new Date();
-    //         var msPerDay = 86400000;
+    var databasePromise = models.npmPackage.find({
+            name: packageName
+        })
+        .exec();
 
-    //         // console.log('DOCS ',docs)
-
-    //         if(today - docs[0].mostRecentDate > (msPerDay*2)){ 
-    //         //docs[0] is fine, all packages should be in sync
-    //             console.log('too old')
-
-    //         } else (console.log(today - docs[0].mostRecentDate ))
-    //     })
-
-
-    //     models.npmPackage.find(function(err, docs) { //limit this
-    //         return res.json(docs);
-    //     })
-    // } 
-
-
-
-
-    // else { //Every request other than page load
-        var databasePromise = models.npmPackage.find({
-                name: packageName
-            })
-            .exec();
-
-        databasePromise.then(function(docs) {
-            if (docs.length === 0) {
-                //go to api and get it
-                var rangeByDate = 'https://api.npmjs.org/downloads/range/' + startDate + ':' + endDate + '/' + packageName;
-                request(rangeByDate, function(err, response) {
-                    var obj = JSON.parse(response.body)
-                    var downloads = obj.downloads;
-                    downloads.forEach(function(record, i) {
-                        //adding actual Date field for sorting later
-                        record.date = new Date(record.day);
-                    });
-                    //resetting obj for DB write
-                    obj.downloads = downloads;
-
-                    var newPackage = new models.npmPackage({
-                        name: obj['package'],
-                        downloads: obj.downloads
-                    });
-                    newPackage.save(function(err, doc) {
-                        if (err) {
-                            throw 'Error Inserting Document ' + err
-                        }
-                        //has to be array for $resource config
-                        return res.json([doc]);
-                    })
+    databasePromise.then(function(docs) {
+        if (docs.length === 0) {
+            //go to api and get it
+            var rangeByDate = 'https://api.npmjs.org/downloads/range/' + startDate + ':' + endDate + '/' + packageName;
+            request(rangeByDate, function(err, response) {
+                var obj = JSON.parse(response.body)
+                var downloads = obj.downloads;
+                downloads.forEach(function(record, i) {
+                    //adding actual Date field for sorting later
+                    record.date = new Date(record.day);
                 });
-            } else {
-                return res.json(docs);
-            }
-        });
-    // }
+                //resetting obj for DB write
+                obj.downloads = downloads;
+
+                var newPackage = new models.npmPackage({
+                    name: obj['package'],
+                    downloads: obj.downloads
+                });
+                newPackage.save(function(err, doc) {
+                    if (err) {
+                        throw 'Error Inserting Document ' + err
+                    }
+                    //has to be array for $resource config
+                    return res.json([doc]);
+                })
+            });
+        } else {
+            return res.json(docs);
+        }
+    });
 });
 
 
