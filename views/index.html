@@ -25,7 +25,7 @@
             </div>
             <div class="col-lg-8 col-md-6 col-sm-6">
                 <h5 class='text-center'>Available Packages: Select to change data or highlight graph</h5>
-                <button class='btn btn-default col-lg-3 col-md-4 col-sm-6 col-xs-6 selectors' ng-repeat="data in allData | orderBy: 'name' " ng-click='addToBeginning($event)'>{{::data.name | upcase}}</button>
+                <button class='btn btn-default col-lg-3 col-md-4 col-sm-6 col-xs-6 selectors' ng-repeat="data in allData | orderBy: 'name' " ng-click='addPackage(data.name)' ng-class="isActive(data.name)">{{::data.name | upcase}}</button>
             </div>
             <!-- <datepicker></datepicker> -->
         </div>
@@ -37,9 +37,9 @@
 <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.3.14/angular.min.js"></script>
 <script src="http://d3js.org/d3.v3.min.js" charset="utf-8"></script>
 <script src='modules/angular-resource/angular-resource.min.js'></script>
-<script src='javascripts/full.min.js'></script>
-<!--<script src='javascripts/app.js'></script>
+<!--<script src='javascripts/full.min.js'></script>-->
+<script src='javascripts/app.js'></script>
 <script src='javascripts/factories.js'></script>
 <script src='javascripts/controllers.js'></script>
 <script src='javascripts/chartDirective.js'></script>
-<script src='javascripts/tableDirective.js'></script>-->
+<script src='javascripts/tableDirective.js'></script>

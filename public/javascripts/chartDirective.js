@@ -2,30 +2,22 @@ app.directive('summaryChart', function(data) {
     return {
         restrict: 'E',
         templateUrl: 'templates/summaryChart.html',
-        scope: {
-            summaryData: '='
-        },
         link: function(scope, element, attrs) {
-            scope.$watch('summaryData', function() {
-                //handling async
-                if (typeof scope.summaryData!=='undefined' && typeof scope.summaryData[0]!=='undefined') {
-                    scope.buildChart()
+            scope.$watch('packageData.length', function() {
+                if (typeof scope.packageData!=='undefined' && typeof scope.packageData[0]!=='undefined') {
+                    scope.buildChart();
                 }
             });
-
-            // scope.$on('update', function() {
-            //     scope.buildChart();
-            // });
 
             scope.buildChart = function() {
 
                 d3.select('svg').remove(); //for re-rendering
 
-                var data = scope.summaryData;
+                var data = scope.packageData;
                 var color = d3.scale.category10();
 
                 var dateRange = [];
-                scope.summaryData[0].downloads.forEach(function(el) {
+                scope.packageData[0].downloads.forEach(function(el) {
                     //HARDCODED to expect syncd dates
                     //Adjust this to use scope variables instead TODO
                     dateRange.push(el.date)
@@ -70,7 +62,7 @@ app.directive('summaryChart', function(data) {
                     .append("g")
                     .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
 
-                //converting to actual dates, is reading as ISO string
+                //converting to actual dates
                 data.forEach(function(d) {
                     d.downloads.forEach(function(e) {
                         e.date = new Date(e.date);
