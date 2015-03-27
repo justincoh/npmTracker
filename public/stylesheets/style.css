@@ -19,3 +19,7 @@ hr {
     background-image:      -o-linear-gradient(left, #ccc, #333, #ccc);
 
 }
+
+footer {
+    margin-top: 20px;
+}
