@@ -4,13 +4,6 @@ app.directive('summaryTable', function(data) {
     return {
         restrict: 'E',
         templateUrl: 'templates/summaryTable.html',
-        // scope: {
-        //     summaryData: '=',
-        //     startDate: '=',
-        //     endDate: '=',
-        //     removePackage: '&',
-        //     lineHighlight: '&'
-        // },
         link: function(scope, element, attrs) {
             scope.rowHandler = function(e) {
                 var thisPackage = this.data.name;
