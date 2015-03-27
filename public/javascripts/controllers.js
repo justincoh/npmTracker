@@ -10,7 +10,9 @@ app.controller('MainCtrl', function($scope, data, populate) {
 
     $scope.$on('update', function() {
         $scope.allData = data.getData();
-        $scope.packageData = $scope.allData.slice(0, 5);
+        // $scope.packageData = $scope.allData.slice(0, 5);
+        $scope.packageData = data.getDisplayData();
+
         namesInTable = [];
         $scope.packageData.forEach(function(npmPackage) {
             //for quicker lookup later
@@ -39,12 +41,25 @@ app.controller('MainCtrl', function($scope, data, populate) {
     $scope.removePackage = function(packageName) {
         //passed into table directive, removes pacakge and then
         //re-appends it to the end of the array
-        var forRemoval = $scope.packageData.filter(function(el) {
+        // var forRemoval = $scope.packageData.filter(function(el) {
+        //     return el.name === packageName;
+        // })
+        // data.removeFromData(packageName);
+        // data.addToData(forRemoval[0]);
+        $scope.packageData = $scope.packageData.filter(function(el){
+            return el.name !==packageName
+        })
+    };
+
+    $scope.addPackage = function(e){
+        var packageName = this.data.name;
+        var packageToAdd = $scope.allData.filter(function(el){
+            console.log(el.name===packageName)
             return el.name === packageName;
         })
-        data.removeFromData(packageName);
-        data.addToData(forRemoval[0]);
-    };
+        $scope.packageData.push(packageToAdd[0])
+        
+    }
 
 
     $scope.lineHighlight = function(packageName) {

@@ -4,7 +4,8 @@ app.factory('populate',function($resource){
 
 
 app.factory('data', function($resource,$rootScope) {
-    var data;
+    var data=[];
+    var displayData =[];
     //data will always be an array based on backend structure
     var broadcast = function(){
         $rootScope.$broadcast('update');
@@ -12,6 +13,9 @@ app.factory('data', function($resource,$rootScope) {
     return {
         getData: function() {
             return data;
+        },
+        getDisplayData: function(){
+            return displayData;
         },
         setData: function(args) {
             //Converting back to real dates, for filtering/sorting
@@ -21,6 +25,7 @@ app.factory('data', function($resource,$rootScope) {
                 });
             });
             data = args;
+            displayData = data.slice(0,3);
             broadcast();
         },
         addToData: function(npmPackage) {
@@ -30,7 +35,8 @@ app.factory('data', function($resource,$rootScope) {
             data.push(npmPackage);            
             broadcast();
         },
-        removeFromData: function(packageName){
+        removeFromData: function(packageName){  
+            //this should probably never be invoked, unless i create a new displaydata?
             data = data.filter(function(thisPackage){
                 return thisPackage.name !== packageName;
             });

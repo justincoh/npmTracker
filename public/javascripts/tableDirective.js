@@ -4,22 +4,22 @@ app.directive('summaryTable', function(data) {
     return {
         restrict: 'E',
         templateUrl: 'templates/summaryTable.html',
-        scope: {
-            summaryData: '=',
-            startDate: '=',
-            endDate: '=',
-            removePackage: '&',
-            lineHighlight: '&'
-        },
+        // scope: {
+        //     summaryData: '=',
+        //     startDate: '=',
+        //     endDate: '=',
+        //     removePackage: '&',
+        //     lineHighlight: '&'
+        // },
         link: function(scope, element, attrs) {
             scope.rowHandler = function(e) {
                 var thisPackage = this.data.name;
                 //if they clicked the remove button, remove
                 if (e.target.className.split(' ').indexOf('remove') !== -1) {
                     //classList was erroring, doesn't have indexOf method apparently
-                    scope.removePackage({packageName: thisPackage})
+                    scope.removePackage(thisPackage)
                 } else {
-                    scope.lineHighlight({packageName: thisPackage})
+                    scope.lineHighlight(thisPackage)
                 }
             }
         }
