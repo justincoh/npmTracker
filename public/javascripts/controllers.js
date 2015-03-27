@@ -1,33 +1,28 @@
 'use strict';
 
 app.controller('MainCtrl', function($scope, data, populate) {
-    var namesInTable = [];
-
     //Init
+    var namesInTable=[]; //for checking duplicate additions
     populate.query(function(res, err) {
         data.setData(res);
         $scope.allData = data.getData();
         $scope.allData.$promise.then(function(res) {
             $scope.packageData = res.slice(0, 3);
-        })
-
-    })
-
-    // namesInTable = [];
-    // $scope.packageData.forEach(function(npmPackage) {
-    //     //for quicker lookup later
-    //     namesInTable.push(npmPackage.name);
-    // })
+            $scope.packageData.forEach(function(el){
+                namesInTable.push(el.name);
+            })
+        });
+    });
 
     $scope.today = new Date(); //Leaving on scope for sorting, for now
     $scope.todayString = $scope.today.toISOString().slice(0, 10); //on scope for display
 
     $scope.startDate = new Date('2015-01-01');
     $scope.startDateString = $scope.startDate.toISOString().slice(0, 10);
+    
     $scope.getData = function() {
         data.resource.query({
             //need query for isArray = true
-            //indexing to [0] in setter below
             name: $scope.packageName,
             startDate: $scope.startDateString,
             endDate: $scope.todayString
@@ -37,19 +32,30 @@ app.controller('MainCtrl', function($scope, data, populate) {
     }
 
     $scope.removePackage = function(packageName) {
+        if($scope.packageData.length===1){
+            d3.selectAll('path').remove();
+        }
         $scope.packageData = $scope.packageData.filter(function(el) {
             return el.name !== packageName
-        })
+        });
+        namesInTable = namesInTable.filter(function(name){
+            return name !== packageName;
+        });
     };
 
-    $scope.addPackage = function(e) {
-        var packageName = this.data.name;
+    $scope.addPackage = function(packageName) {
+        if(namesInTable.indexOf(packageName)!==-1){
+            return $scope.lineHighlight(packageName)}
         var packageToAdd = $scope.allData.filter(function(el) {
-            console.log(el.name === packageName)
             return el.name === packageName;
         });
+        packageToAdd = packageToAdd[0];
+        $scope.packageData.push(packageToAdd);
+        namesInTable.push(packageToAdd.name);
+    };
 
-        $scope.packageData.push(packageToAdd[0]);
+    $scope.isActive = function(packageName){
+        return namesInTable.indexOf(packageName) !== -1 ? 'active':'';
     }
 
 
@@ -64,22 +70,6 @@ app.controller('MainCtrl', function($scope, data, populate) {
             .ease('bounce')
             .style('stroke-width', '8px')
     }
-
-
-    $scope.addToBeginning = function(e) {
-        var packageName = e.target.innerHTML.toLowerCase();
-        if (namesInTable.indexOf(packageName) !== -1) {
-            $scope.lineHighlight(packageName);
-            return;
-        }
-
-        var packageForRemoval = $scope.allData.filter(function(thisPackage) {
-            return thisPackage.name === packageName;
-        });
-        data.removeFromData(packageName);
-        data.addToBeginning(packageForRemoval[0]); //To keep it on list
-    }
-
 });
 
 
