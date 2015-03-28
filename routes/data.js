@@ -23,18 +23,21 @@ router.get('/?', function(req, res) {
             //go to api and get it
             var rangeByDate = 'https://api.npmjs.org/downloads/range/' + startDate + ':' + endDate + '/' + packageName;
             request(rangeByDate, function(err, response) {
-                var obj = JSON.parse(response.body)
-                var downloads = obj.downloads;
+                var responseObj = JSON.parse(response.body)
+                if(responseObj.hasOwnProperty("error")){
+                    return res.send([0]);
+                }
+                var downloads = responseObj.downloads;
                 downloads.forEach(function(record, i) {
                     //adding actual Date field for sorting later
                     record.date = new Date(record.day);
                 });
-                //resetting obj for DB write
-                obj.downloads = downloads;
+                //resetting responseObj for DB write
+                responseObj.downloads = downloads;
 
                 var newPackage = new models.npmPackage({
-                    name: obj['package'],
-                    downloads: obj.downloads
+                    name: responseObj['package'],
+                    downloads: responseObj.downloads
                 });
                 newPackage.save(function(err, doc) {
                     if (err) {

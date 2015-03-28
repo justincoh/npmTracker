@@ -23,3 +23,8 @@ hr {
 footer {
     margin-top: 20px;
 }
+
+.error {
+    text-color: red;
+    text-decoration: muted;
+}

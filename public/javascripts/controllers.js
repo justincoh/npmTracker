@@ -1,32 +1,44 @@
 'use strict';
 
 app.controller('MainCtrl', function($scope, data, populate) {
-    //Init
-    var namesInTable=[]; //for checking duplicate additions
+    
+    var namesOnScope=[];
+    var namesInTable=[];
+    //Init        
     populate.query(function(res, err) {
         data.setData(res);
         $scope.allData = data.getData();
-        $scope.allData.$promise.then(function(res) {
-            $scope.packageData = res.slice(0, 3);
-            $scope.packageData.forEach(function(el){
-                namesInTable.push(el.name);
-            })
+        $scope.allData.data.forEach(function(el){
+            namesOnScope.push(el.name)
+        });
+        $scope.packageData = $scope.allData.data.slice(0,3);
+        $scope.packageData.forEach(function(el){
+            namesInTable.push(el.name);
         });
     });
 
-    $scope.today = new Date(); //Leaving on scope for sorting, for now
-    $scope.todayString = $scope.today.toISOString().slice(0, 10); //on scope for display
+    $scope.today = new Date();
+    $scope.todayString = $scope.today.toISOString().slice(0, 10); 
+    //on scope for display
 
     $scope.startDate = new Date('2015-01-01');
     $scope.startDateString = $scope.startDate.toISOString().slice(0, 10);
     
-    $scope.getData = function() {
+    $scope.getNewData = function() {
+        if(namesOnScope.indexOf($scope.packageName.toLowerCase()) !==-1 ){
+            return $scope.errorMessage = $scope.packageName+' data is already here!'
+        }
+
         data.resource.query({
             //need query for isArray = true
             name: $scope.packageName,
             startDate: $scope.startDateString,
             endDate: $scope.todayString
         }, function(res, err) {
+            if(res[0]===0){
+                return $scope.errorMessage = 'No data found for package: '+$scope.packageName;
+                
+            }
             data.addToData(res[0]);
         });
     }
@@ -46,7 +58,7 @@ app.controller('MainCtrl', function($scope, data, populate) {
     $scope.addPackage = function(packageName) {
         if(namesInTable.indexOf(packageName)!==-1){
             return $scope.lineHighlight(packageName)}
-        var packageToAdd = $scope.allData.filter(function(el) {
+        var packageToAdd = $scope.allData.data.filter(function(el) {
             return el.name === packageName;
         });
         packageToAdd = packageToAdd[0];
@@ -69,13 +81,13 @@ app.controller('MainCtrl', function($scope, data, populate) {
             .duration(1000)
             .ease('bounce')
             .style('stroke-width', '8px')
-    }
+    };
 });
 
 
 app.filter('upcase', function() {
     return function(input) {
         if (!input) return;
-        return input[0].toUpperCase() + input.slice(1);
+        return input[0].toUpperCase() + input.slice(1).toLowerCase();
     }
 });
