@@ -4,9 +4,8 @@ I couldn't find a node package statistics page I liked, so I built one [here] --
 
 The page is pretty minimal at the moment, but I'm working on extensions:
 
-1. Input field to get more module data
-2. Hover tooltip for the graph
-3. Selectable date ranges.  Right now only 2015-01-01 until the current date is available
+1. Hover tooltip for the graph
+2. Selectable date ranges.  Right now only 2015-01-01 until the current date is available
 
 Enjoy!
 
