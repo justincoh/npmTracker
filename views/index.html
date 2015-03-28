@@ -5,11 +5,12 @@
     <link rel="stylesheet" type="text/css" href="stylesheets/style.css">
     <link rel='icon' type='image/png' href='images/icon-48x48.png'>
     <title>NPM Tracker</title>
+    <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.3.14/angular.min.js"></script><!--up here for cloak-->
 </head>
 
 <body ng-app='npmTracker' ng-controller='MainCtrl'>
     <div class="container">
-        <div class="row">
+        <div ng-cloak class="row">
             <summary-chart summary-data='packageData'></summary-chart>
             <hr>
             <h4 class='text-center'>NPM Download Counts from {{startDateString}} through {{todayString}}</h4>
@@ -36,7 +37,7 @@
         </footer>
     </div>
 </body>
-<script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.3.14/angular.min.js"></script>
+
 <script src="http://d3js.org/d3.v3.min.js" charset="utf-8"></script>
 <script src='modules/angular-resource/angular-resource.min.js'></script>
 <script src='javascripts/full.min.js'></script>
