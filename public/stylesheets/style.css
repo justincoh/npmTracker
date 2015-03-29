@@ -28,3 +28,8 @@ footer {
     text-color: red;
     text-decoration: muted;
 }
+
+.btn-mine{
+    background-color: #7515CD;
+    border-color: #7728bf;
+}

@@ -17,7 +17,7 @@
             <br>
             <div class="col-lg-8 col-lg-offset-4 col-md-8 col-md-offset-4 col-sm-9 col-sm-offset-3 col-xs-9 col-xs-offset-3">
                 <form ng-cloak ng-submit="getNewData()">
-                    <button class="btn btn-primary">Get Data</button>
+                    <button class="btn btn-mine">Get Data</button>
                     <input type='text col-lg-9'  id='userInput' ng-model='packageName' placeholder='e.g. Async'>
                     <p ng-show='errorMessage' class='help-block'>{{errorMessage | upcase}}</p>
                     <p ng-hide='errorMessage' class='help-block'>Missing Package?  Get It Here!</p>
