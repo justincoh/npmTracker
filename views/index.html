@@ -10,13 +10,13 @@
 
 <body ng-app='npmTracker' ng-controller='MainCtrl'>
     <div class="container">
-        <div ng-cloak class="row">
-            <summary-chart summary-data='packageData'></summary-chart>
+        <div class="row">
+            <summary-chart ng-cloak summary-data='packageData'></summary-chart>
             <hr>
-            <h4 class='text-center'>NPM Download Counts from {{startDateString}} through {{todayString}}</h4>
+            <h4 ng-cloak class='text-center'>NPM Download Counts from {{startDateString}} through {{todayString}}</h4>
             <br>
             <div class="col-lg-8 col-lg-offset-4 col-md-8 col-md-offset-4 col-sm-9 col-sm-offset-3 col-xs-9 col-xs-offset-3">
-                <form ng-submit="getNewData()">
+                <form ng-cloak ng-submit="getNewData()">
                     <button class="btn btn-primary">Get Data</button>
                     <input type='text col-lg-9'  id='userInput' ng-model='packageName' placeholder='e.g. Async'>
                     <p ng-show='errorMessage' class='help-block'>{{errorMessage | upcase}}</p>
@@ -24,11 +24,11 @@
                 </form>
             </div>
             <div class="col-lg-4 col-md-6 col-sm-6">
-                <summary-table end-date='todayString' start-date='startDateString' summary-data='packageData' remove-package='removePackage(packageName)' line-highlight='lineHighlight(packageName)'></summary-table>
+                <summary-table ng-cloak end-date='todayString' start-date='startDateString' summary-data='packageData' remove-package='removePackage(packageName)' line-highlight='lineHighlight(packageName)'></summary-table>
             </div>
             <div class="col-lg-8 col-md-6 col-sm-6">
                 <h5 class='text-center'>Available Packages: Select to change data or highlight graph</h5>
-                <button class='btn btn-default col-lg-3 col-md-4 col-sm-6 col-xs-6 selectors' ng-repeat="data in allData.data | orderBy: 'name' " ng-click='addPackage(data.name)' ng-class="isActive(data.name)">{{::data.name | upcase}}</button>
+                <button ng-cloak class='btn btn-default col-lg-3 col-md-4 col-sm-6 col-xs-6 selectors' ng-repeat="data in allData.data | orderBy: 'name' " ng-click='addPackage(data.name)' ng-class="isActive(data.name)">{{::data.name | upcase}}</button>
             </div>
             <!-- <datepicker></datepicker> -->
         </div>
