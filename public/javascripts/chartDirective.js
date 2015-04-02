@@ -4,13 +4,18 @@ app.directive('summaryChart', function(data) {
         templateUrl: 'templates/summaryChart.html',
         link: function(scope, element, attrs) {
             scope.$watch('packageData.length', function() {
-                if (typeof scope.packageData!=='undefined' && typeof scope.packageData[0]!=='undefined') {
+                if (typeof scope.packageData !== 'undefined' && typeof scope.packageData[0] !== 'undefined') {
                     scope.buildChart();
                 }
             });
 
+
+
             scope.buildChart = function() {
 
+
+                var startTime = scope.startDate;
+                var endTime = scope.today;
                 d3.select('svg').remove(); //figure out how to transition this TODO
 
                 var data = scope.packageData;
@@ -33,22 +38,55 @@ app.directive('summaryChart', function(data) {
                     height = 500 - margin.top - margin.bottom;
 
                 var x = d3.time.scale()
+                    .domain([startTime, endTime])
                     .range([0, width]);
                 //Need to adjust both ranges TODO
                 var y = d3.scale.linear()
                     .range([height, 0]);
 
-                var xAxis = d3.svg.axis()
+                // var xAxis = d3.svg.axis()
+                //     .scale(x)
+                //     .orient("bottom")
+                //     .ticks(d3.time.week, 2) //make this reactive to date range passed
+                //     .tickFormat(d3.time.format("%Y-%m-%d"));
+
+
+                var zoom = d3.behavior.zoom()
+                    .x(x)
+                    .scaleExtent([1, 100])
+                    .on('zoom', draw);
+
+                var svg = d3.select("#chart-container").append("svg")
+                    // .attr("width", width + margin.left + margin.right)
+                    .attr('width', '100%')
+                    .attr("height", height + margin.top + margin.bottom)
+                    .append("g")
+                    .attr("transform", "translate(" + margin.left + "," + margin.top + ")")
+                    .call(zoom)
+
+                //has to be here for zooming
+                svg.append("rect") 
+                    .attr('class', 'background')
+                    .attr("width", width)
+                    .attr("height", height)
+                    .style('opacity', 0);
+
+                var xAxisZoom = d3.svg.axis()
                     .scale(x)
-                    .orient("bottom")
-                    .ticks(d3.time.week, 2) //make this reactive to date range passed
-                    .tickFormat(d3.time.format("%Y-%m-%d"));
+                    .orient('bottom');
+
+                svg.append('g')
+                    .attr('class', 'x axis')
+                    .attr('transform', "translate(0," + y(0) + ")")
+                    .call(xAxisZoom)
+
 
                 var yAxis = d3.svg.axis()
                     .scale(y)
                     .orient("left");
 
                 var line = d3.svg.line()
+                    .interpolate('cardinal')
                     .x(function(d) {
                         return x(d.date);
                     })
@@ -56,14 +94,10 @@ app.directive('summaryChart', function(data) {
                         return y(d.downloads);
                     });
 
-                var svg = d3.select("#chart-container").append("svg")
-                    // .attr("width", width + margin.left + margin.right)
-                    .attr('width', '100%')
-                    .attr("height", height + margin.top + margin.bottom)
-                    .append("g")
-                    .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
+                
 
-                //converting to actual dates
+                
+                    //converting to actual dates
                 data.forEach(function(d) {
                     d.downloads.forEach(function(e) {
                         e.date = new Date(e.date);
@@ -71,9 +105,9 @@ app.directive('summaryChart', function(data) {
                 });
 
                 //for axis scale
-                x.domain(d3.extent(dateRange, function(d) {
-                    return new Date(d);
-                }));
+                // x.domain(d3.extent(dateRange, function(d) {
+                //     return new Date(d);
+                // }));
 
                 //d3.max and min wont work since the array is nested
                 var getMax = function(arr) {
@@ -105,10 +139,10 @@ app.directive('summaryChart', function(data) {
                 //y axis scale
                 y.domain([downloadMin * .75, downloadMax * 1.1]);
 
-                svg.append("g")
-                    .attr("class", "x axis")
-                    .attr("transform", "translate(-5," + height + ")")
-                    .call(xAxis);
+                // svg.append("g")
+                //     .attr("class", "x axis")
+                //     .attr("transform", "translate(-5," + height + ")")
+                //     .call(xAxis);
 
                 svg.append("g")
                     .attr("class", "y axis")
@@ -116,7 +150,7 @@ app.directive('summaryChart', function(data) {
                     .append("text")
                     .attr("transform", "rotate(-90)")
                     .attr("y", -85)
-                    .attr('x',-175)
+                    .attr('x', -175)
                     .attr("dy", ".71em")
                     .style("text-anchor", "end")
                     .text("Downloads");
@@ -159,7 +193,7 @@ app.directive('summaryChart', function(data) {
                         var offset = height * color.domain().length / 2;
                         // var horz = -2 * legendRectSize;
                         var vert = i * height - offset;
-                        return 'translate(' + (width*1.05) + ',' + (vert+200) + ')';
+                        return 'translate(' + (width * 1.05) + ',' + (vert + 200) + ')';
                     });
                 legend.append('rect')
                     .attr('width', legendRectSize)
@@ -175,6 +209,21 @@ app.directive('summaryChart', function(data) {
                     });
 
                 //End Legend
+
+                function draw() {
+                    // if blocks handle zoom/pan limits
+                    if (x.domain()[0] < startTime) {
+                        var k = zoom.translate()[0] - x(startTime) + x.range()[0];
+                        zoom.translate([k, 0]);
+                    } else if (x.domain()[1] > endTime) {
+                        var k = zoom.translate()[0] - x(endTime) + x.range()[1];
+                        zoom.translate([k, 0]);
+                    }
+
+                    svg.select("g.x.axis").call(xAxisZoom);
+                    svg.select("path.line").attr("d", line);
+
+                }
 
 
             };
