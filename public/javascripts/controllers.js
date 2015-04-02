@@ -12,9 +12,8 @@ app.controller('MainCtrl', function($scope, data, populate) {
             namesOnScope.push(el.name)
         });
         //Refactor to use data.names TODO
-        $scope.packageData = $scope.allData.data.slice(0,2);
+        $scope.packageData = $scope.allData.data.slice(0,3);
         $scope.packageData.forEach(function(el){
-            console.log(el)
             namesInTable.push(el.name);
         });
     });
