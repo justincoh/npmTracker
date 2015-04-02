@@ -88,14 +88,12 @@ app.directive('summaryChart', function(data) {
                 var line = d3.svg.line()
                     .interpolate('cardinal')
                     .x(function(d) {
+                        console.log('line 91 ' ,x(d.date))
                         return x(d.date);
                     })
                     .y(function(d) {
                         return y(d.downloads);
                     });
-
-                
-
                 
                     //converting to actual dates
                 data.forEach(function(d) {
@@ -168,10 +166,10 @@ app.directive('summaryChart', function(data) {
                     .attr('class', function(d) {
                         return d.name + ' line'
                     })
-                    // .attr('class',function(d){return d.name})
-                    .attr('d', function(d) {
-                        return line(d.downloads);
-                    })
+                    
+                    // .attr('d', function(d) {
+                    //     return line(d.downloads);
+                    // })
                     .style('stroke', function(d) {
                         return color(d.name);
                     })
@@ -209,6 +207,7 @@ app.directive('summaryChart', function(data) {
                     });
 
                 //End Legend
+                draw();
 
                 function draw() {
                     // if blocks handle zoom/pan limits
@@ -221,7 +220,8 @@ app.directive('summaryChart', function(data) {
                     }
 
                     svg.select("g.x.axis").call(xAxisZoom);
-                    svg.select("path.line").attr("d", line);
+                    svg.selectAll("path.line").attr("d", function(d){
+                        return line(d.downloads)});
 
                 }
 
