@@ -35,11 +35,11 @@ app.directive('summaryChart', function(data) {
                     .range([height, 0]);
 
                 var line = d3.svg.line()
-                    .interpolate('cardinal')
+                    // .interpolate('cardinal') 
                     .x(function(d) {
-                        // if (x(d.date) <= 0) {
-                        //     return 0;
-                        // }
+                        if (x(d.date) <= 0) {
+                            return null;
+                        }
                         return x(d.date)
 
                     })
@@ -76,9 +76,9 @@ app.directive('summaryChart', function(data) {
                     .attr('transform', "translate(0," + y(0) + ")")
                     .call(xAxis)
 
-                var yAxis = d3.svg.axis()
-                    .scale(y)
-                    .orient("left");
+                // var yAxis = d3.svg.axis()
+                //     .scale(y)
+                //     .orient("left");
 
                 //converting to actual dates
                 data.forEach(function(d) {
@@ -125,7 +125,7 @@ app.directive('summaryChart', function(data) {
 
                 svg.append("g")
                     .attr("class", "y axis")
-                    .call(yAxis)
+                    .call(d3.svg.axis().scale(y).orient('left'))
                     .append("text")
                     .attr("transform", "rotate(-90)")
                     .attr("y", -85)
@@ -216,10 +216,10 @@ app.directive('summaryChart', function(data) {
                         zoom.translate([k, 0]);
                     }
 
-                    svg.select("g.x.axis").call(xAxis);
                     svg.selectAll("path.line").attr("d", function(d) {
                         return line(d.downloads)
                     })
+                    svg.select("g.x.axis").call(xAxis);
 
 
 
