@@ -11,7 +11,7 @@ app.directive('summaryChart', function(data) {
 
             scope.buildChart = function() {
 
-                d3.select('svg').remove(); //for re-rendering
+                d3.select('svg').remove(); //figure out how to transition this TODO
 
                 var data = scope.packageData;
                 var color = d3.scale.category10();
@@ -28,6 +28,7 @@ app.directive('summaryChart', function(data) {
                         bottom: 30,
                         left: 90
                     },
+                    //set width/height off viewport dimensions TODO
                     width = 1000 - margin.left - margin.right,
                     height = 500 - margin.top - margin.bottom;
 
