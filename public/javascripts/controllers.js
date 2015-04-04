@@ -77,7 +77,7 @@ app.controller('MainCtrl', function($scope, data, populate) {
             .duration(500)
             .ease('bounce')
             .style('stroke-width', '2px');
-        d3.select('.' + packageName) //select returns first in DOM traversal order
+        d3.select('.' + packageName+ ' .line')
             .transition()
             .duration(1000)
             .ease('bounce')
