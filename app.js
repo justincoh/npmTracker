@@ -3,9 +3,10 @@ var path = require('path');
 var logger = require('morgan');
 var cookieParser = require('cookie-parser');
 var bodyParser = require('body-parser');
-var routes = require('./routes/index');
-var data = require('./routes/data');
-
+// var routes = require('./routes/index');
+var routes = require('./routes/indexRebuild.js');
+// var data = require('./routes/data');
+var data = require('./routes/dataRebuild.js')
 
 
 var app = express();

@@ -5,24 +5,26 @@ app.controller('MainCtrl', function($scope, data, populate) {
     var namesOnScope=[];
     var namesInTable=[];
     //Init        
-    populate.query(function(res, err) {
-        data.setData(res);
-        $scope.allData = data.getData();
-        $scope.allData.data.forEach(function(el){
-            namesOnScope.push(el.name)
-        });
-        //Refactor to use data.names TODO
-        $scope.packageData = $scope.allData.data.slice(0,3);
-        $scope.packageData.forEach(function(el){
-            namesInTable.push(el.name);
-        });
-    });
+    // populate.query(function(res, err) {
+    //     data.setData(res);
+    //     $scope.allData = data.getData();
+    //     $scope.allData.data.forEach(function(el){
+    //         namesOnScope.push(el.name)
+    //     });
+    //     //Refactor to use data.names TODO
+    //     $scope.packageData = $scope.allData.data.slice(0,3);
+    //     $scope.packageData.forEach(function(el){
+    //         namesInTable.push(el.name);
+    //     });
+    // });
+
+    $scope.packageData = data.getData();
 
     $scope.today = new Date();
     $scope.todayString = $scope.today.toISOString().slice(0, 10); 
     //on scope for display
 
-    $scope.startDate = new Date('2015-01-01');
+    $scope.startDate = new Date('2015-04-01');
     $scope.startDateString = $scope.startDate.toISOString().slice(0, 10);
     
     $scope.getNewData = function() {
@@ -36,11 +38,16 @@ app.controller('MainCtrl', function($scope, data, populate) {
             startDate: $scope.startDateString,
             endDate: $scope.todayString
         }, function(res, err) {
-            if(res[0]===0){
+            if(res[0].hasOwnProperty('error')){
+                console.log('CONTROLLERS 40')
                 return $scope.errorMessage = 'No data found for package: '+$scope.packageName;
                 
             }
-            data.addToData(res[0]);
+            res.forEach(function(record){ //converting back to real dates
+                record.date = new Date(record.date)
+            })
+            data.addToData(res);
+
         });
     }
 

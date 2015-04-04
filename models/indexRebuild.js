@@ -3,7 +3,7 @@ var mongoose = require('mongoose');
 if (typeof process.env.MONGOLAB_URI !== 'undefined') {
     mongoose.connect(process.env.MONGOLAB_URI)
 } else {
-    mongoose.connect('mongodb://localhost/npmTracker');
+    mongoose.connect('mongodb://localhost/npmTrackerV2');
 };
 var async = require('async');
 
@@ -24,9 +24,9 @@ var packageSchema = new Schema({
 
 var downloadSchema = new Schema({
 	date: {type:Date,required:true},
-	downloadCount: {type:Number, required:true},
+	downloads: {type:Number, required:true},
 	packageInfo: {type: Schema.Types.ObjectId, ref: 'PackageInfo'},
-	dateString: String
+    packageName: {type:String, required:true} //duplicated to make lookup easier on initial GET
 })
 
 var npmPackage = mongoose.model('PackageInfo', packageSchema);

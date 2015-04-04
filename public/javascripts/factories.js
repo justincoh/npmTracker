@@ -21,11 +21,10 @@ app.factory('data', function($resource,$rootScope) {
             data.data = args;
             data.names = names;
         },
-        addToData: function(npmPackage) {
-            npmPackage.downloads.forEach(function(download){
-                download.date = new Date(download.date);
-            });
-            data.data.push(npmPackage); //come back when you're grabbing new packages
+        addToData: function(downloadArray) {
+            var obj ={};
+            var packageName = downloadArray[0].name;
+            data.packageName = downloadArray;
         },
         resource: $resource('/data')
     }

@@ -11,7 +11,7 @@
 <body ng-app='npmTracker' ng-controller='MainCtrl'>
     <div class="container">
         <div class="row">
-            <summary-chart summary-data='packageData'></summary-chart>
+            <!-- <summary-chart summary-data='packageData'></summary-chart> -->
             <hr>
             <h4 ng-cloak class='text-center'>NPM Download Counts from {{startDateString}} through {{todayString}}</h4>
             <br>
@@ -24,7 +24,7 @@
                 </form>
             </div>
             <div class="col-lg-4 col-md-6 col-sm-6">
-                <summary-table ng-cloak end-date='todayString' start-date='startDateString' summary-data='packageData' remove-package='removePackage(packageName)' line-highlight='lineHighlight(packageName)'></summary-table>
+                <summary-table ng-cloak></summary-table>
             </div>
             <div class="col-lg-8 col-md-6 col-sm-6">
                 <h5 class='text-center'>Available Packages: Select to change data or highlight graph</h5>

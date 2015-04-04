@@ -6,7 +6,7 @@
         </tr>
     </thead>
     <tbody>
-        <tr ng-repeat="data in packageData | orderBy: '-totalDownloads'" ng-click="rowHandler($event)">
+        <tr ng-repeat="data in packageData" ng-click="rowHandler($event)">
             <td class='text-left'>{{data.name | upcase}}</td>
             <td ng-class='{{data.name}}' class='text-center'>{{data.totalDownloads | number}}
                 <button type='button' class='btn btn-xs btn-danger remove pull-right'><span class="glyphicon glyphicon-remove remove"></span></button>
