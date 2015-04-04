@@ -34,8 +34,37 @@ app.directive('summaryChart', function(data) {
                     .range([0, width]);
 
                 var y = d3.scale.linear()
-                    .domain([0, 100000])
                     .range([height, 0]);
+
+                //d3.max and min wont work since the array is nested
+                var getMax = function(arr) {
+                    var max = 0;
+                    arr.forEach(function(npmPackage) {
+                        npmPackage.downloads.forEach(function(day) {
+                            if (day.downloads > max) {
+                                max = day.downloads;
+                            }
+                        })
+                    })
+                    return max;
+                };
+                var downloadMax = getMax(data);
+
+                var getMin = function(arr) {
+                    var min = downloadMax;
+                    arr.forEach(function(npmPackage) {
+                        npmPackage.downloads.forEach(function(day) {
+                            if (day.downloads < min) {
+                                min = day.downloads;
+                            }
+                        })
+                    })
+                    return min;
+                };
+                var downloadMin = getMin(data);
+
+                //y axis scale
+                y.domain([downloadMin * .75, downloadMax * 1.1]);
 
                 var line = d3.svg.line()
                     .x(function(d) {
@@ -52,7 +81,8 @@ app.directive('summaryChart', function(data) {
                     .on('zoom', draw);
 
                 var svg = d3.select('#chart-container').append('svg')
-                    .attr("width", width + margin.left + margin.right)
+                    // .attr("width", width + margin.left + margin.right)
+                    .attr("width", '100%')
                     .attr("height", height + margin.top + margin.bottom)
                     .append("g")
                     .attr("transform", "translate(" + margin.left + "," + margin.top + ")")
@@ -68,7 +98,7 @@ app.directive('summaryChart', function(data) {
                 svg.append("defs").append("clipPath")
                     .attr("id", "clip")
                     .append("rect")
-                    .attr("width", width)
+                    .attr("width", width*2)
                     .attr("height", height);
 
 
@@ -78,18 +108,23 @@ app.directive('summaryChart', function(data) {
 
                 svg.append('g')
                     .attr("class", "x axis")
-                    .attr("transform", "translate(0," + y(0) + ")")
+                    .attr("transform", "translate(0," + (height) + ")")
+                    .attr('width','100%')
                     .call(xAxis);
 
 
                 svg.append("g")
                     .attr("class", "y axis")
                     .call(d3.svg.axis().scale(y).orient("left"))
-                    .append('text')
-                    .text('Downloads')
-                    .style('font-size', '16px')
-                    .attr('x', 5)
-                    .attr('y', 0);
+                    .append("text")
+                    .attr("transform", "rotate(-90)")
+                    .attr("y", -85)
+                    .attr('x', -175)
+                    .attr("dy", ".71em")
+                    .style("text-anchor", "end")
+                    .text("Downloads");
+
+
 
                 //this is where i append path, how to append multiples
                 var packages = svg.selectAll('.npmPackage')
@@ -101,7 +136,9 @@ app.directive('summaryChart', function(data) {
                     });
 
                 packages.append('path')
-                    .attr('class', 'line')
+                    .attr('class', function(d) {
+                        return d.name + ' line'
+                    })
                     .attr('clip-path', function(d) {
                         return 'url(#clip)'
                     })
@@ -110,7 +147,39 @@ app.directive('summaryChart', function(data) {
                     })
                     .style('stroke', function(d) {
                         return color(d.name)
-                    })
+                    });
+
+                //Building Legend
+                //has to stay in here since it needs color.domain()
+                var legendRectSize = 18,
+                    legendSpacing = 4;
+
+                var legend = svg.selectAll('.legend')
+                    .data(color.domain())
+                    .enter()
+                    .append('g')
+                    .attr('class', 'legend')
+                    .attr('transform', function(d, i) {
+                        var height = legendRectSize + legendSpacing;
+                        var offset = height * color.domain().length / 2;
+                        // var horz = -2 * legendRectSize;
+                        var vert = i * height - offset;
+                        return 'translate(' + (width*1.05) + ',' + (vert + 200) + ')';
+                    });
+                legend.append('rect')
+                    .attr('width', legendRectSize)
+                    .attr('height', legendRectSize)
+                    .style('fill', color)
+                    .style('stroke', color);
+
+                legend.append('text')
+                    .attr('x', legendRectSize + legendSpacing)
+                    .attr('y', legendRectSize - legendSpacing)
+                    .text(function(d) {
+                        return d[0].toUpperCase() + d.slice(1);
+                    });
+
+                //End Legend
 
 
                 function draw() {
@@ -124,7 +193,7 @@ app.directive('summaryChart', function(data) {
                     }
 
                     svg.select("g.x.axis").call(xAxis);
-                    svg.select("path.line").attr("d", function(d) {
+                    svg.selectAll("path.line").attr("d", function(d) {
                         return line(d.downloads)
                     });
 
