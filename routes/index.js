@@ -29,7 +29,7 @@ router.get('/populate', function(req, res) {
         		minDate = entry.mostRecentDate;
         	}
         });
-        console.log("minDate ",minDate)
+        
 
         if ((today - minDate > msPerDay * 2) && (today.getHours() >= 12)) {
             console.log('timediff ', today - docs[0].mostRecentDate)
@@ -51,7 +51,6 @@ router.get('/populate', function(req, res) {
                 function(callback) { //get all from DB after update
                     models.npmPackage.find().exec(function(mongoErr, mongoRes) {
                         callback(null, mongoRes)
-                        console.log('MONGORES ',mongoRes)
                     });
                 }
             ], function(asyncErr, asyncRes) {
