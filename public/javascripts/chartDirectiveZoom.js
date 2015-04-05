@@ -98,7 +98,7 @@ app.directive('summaryChart', function(data) {
                 svg.append("defs").append("clipPath")
                     .attr("id", "clip")
                     .append("rect")
-                    .attr("width", width*2)
+                    .attr("width", width * 2)
                     .attr("height", height);
 
 
@@ -109,7 +109,7 @@ app.directive('summaryChart', function(data) {
                 svg.append('g')
                     .attr("class", "x axis")
                     .attr("transform", "translate(0," + (height) + ")")
-                    .attr('width','100%')
+                    .attr('width', '100%')
                     .call(xAxis);
 
 
@@ -147,7 +147,38 @@ app.directive('summaryChart', function(data) {
                     })
                     .style('stroke', function(d) {
                         return color(d.name)
-                    });
+                    })
+                    // .on('mouseover', function(d) {
+                    //     buildTooltip.call(this);
+                    // })
+                    // .on('mousemove', function() {
+                    //     buildTooltip.call(this);
+                    // })
+                    // .on('mouseout', function() {
+                    //     tooltip.transition()
+                    //         .duration(500)
+                    //         .style('opacity', 0)
+                    // });
+
+                // var tooltip = d3.select('#tooltip')
+
+                // function buildTooltip() {
+                //     var scaleData = d3.mouse(this)
+                //     var packageName = this.classList[0];
+                //     var displayName = packageName.slice(0,1).toUpperCase() + packageName.slice(1);
+                //     var date = x.invert(scaleData[0]).toLocaleDateString()
+                //     var downloads = y.invert(scaleData[1]).toFixed(0);
+                //     var template = displayName+'<br>'+date + '<br>' + downloads + ' Downloads';
+                //     tooltip
+                //         .style('left', (d3.event.pageX - 40) + 'px')
+                //         .style('top', (d3.event.pageY - 70) + 'px')
+                //     tooltip.html([template]);
+                //     tooltip.style('opacity', 1)
+                //         .style('background', function(d) {
+                //             return color(packageName)
+                //         })
+                // };
+
 
                 //Building Legend
                 //has to stay in here since it needs color.domain()
@@ -164,7 +195,7 @@ app.directive('summaryChart', function(data) {
                         var offset = height * color.domain().length / 2;
                         // var horz = -2 * legendRectSize;
                         var vert = i * height - offset;
-                        return 'translate(' + (width*1.05) + ',' + (vert + 200) + ')';
+                        return 'translate(' + (width * 1.05) + ',' + (vert + 200) + ')';
                     });
                 legend.append('rect')
                     .attr('width', legendRectSize)
