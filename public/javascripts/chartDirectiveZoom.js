@@ -68,6 +68,7 @@ app.directive('summaryChart', function(data) {
 
                 var line = d3.svg.line()
                     .x(function(d) {
+
                         return x(d.date)
                     })
                     .y(function(d) {
@@ -132,33 +133,66 @@ app.directive('summaryChart', function(data) {
                     .enter()
                     .append('g')
                     .attr('class', function(d) {
-                        return d.name
+                        
+                        return d.name + ' package'
                     });
 
-                packages.append('path')
-                    .attr('class', function(d) {
-                        return d.name + ' line'
-                    })
-                    .attr('clip-path', function(d) {
-                        return 'url(#clip)'
-                    })
-                    .attr('d', function(d) {
-                        return line(d.downloads)
-                    })
-                    .style('stroke', function(d) {
-                        return color(d.name)
-                    })
-                    // .on('mouseover', function(d) {
-                    //     buildTooltip.call(this);
-                    // })
-                    // .on('mousemove', function() {
-                    //     buildTooltip.call(this);
-                    // })
-                    // .on('mouseout', function() {
-                    //     tooltip.transition()
-                    //         .duration(500)
-                    //         .style('opacity', 0)
-                    // });
+
+                d3.selectAll('.package').each(function(parentData){
+                    console.log('INSIDE EACH ',parentData, this)
+                    d3.select(this)
+                        .datum([parentData.downloads])
+                        .enter()
+                        .append('circle')
+                        .attr('cx',function(d){
+                            return x(d.date)
+                        })
+                        .attr('cy',function(d){
+                            return y(d.downloads)
+                        })
+                        .attr('r','5px')
+                        .style('fill','black')
+                })
+                                    
+
+                //This won't work because of how downloads is nested
+                // packages.append('circle')
+                //     .attr('class',function(d){
+                //         return d.name+ ' point'
+                //     })
+                //     .attr('cx', function(d){
+                //         console.log(d)
+                //         return x(d.downloads)
+                //     })
+                //     .attr('cx', function(d){
+                //         return y(d.downloads)
+                //     })
+                //     .attr('r','10px')
+
+                // packages.append('path')
+                //     .attr('class', function(d) {
+                //         return d.name + ' line'
+                //     })
+                //     .attr('clip-path', function(d) {
+                //         return 'url(#clip)'
+                //     })
+                //     .attr('d', function(d) {
+                //         return line(d.downloads)
+                //     })
+                //     .style('stroke', function(d) {
+                //         return color(d.name)
+                //     })
+                //     .on('mouseover', function(d) {
+                //         buildTooltip.call(this);
+                //     })
+                //     .on('mousemove', function() {
+                //         buildTooltip.call(this);
+                //     })
+                //     .on('mouseout', function() {
+                //         tooltip.transition()
+                //             .duration(500)
+                //             .style('opacity', 0)
+                //     });
 
                 // var tooltip = d3.select('#tooltip')
 
