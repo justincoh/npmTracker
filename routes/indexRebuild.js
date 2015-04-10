@@ -17,6 +17,20 @@ router.get('/populate', function(req, res) {
     // var msPerDay = 86400000;
     // var today = new Date();
 
+
+    //Now downloads is just one huge array, going to have to sort by packagename and date
+    models.Downloads.find().populate('packageInfo','maxDate').sort({'packageName':1}).exec(function(err, docs) {
+        if(err){console.log('populate err ',err); return res.status(418).send()}
+
+
+        if (docs.length === 0) {
+            return res.status(200).send()
+        }
+        console.log('DOCS ',docs)
+    })
+
+
+
     // models.PackageInfo.find().exec(function(err, docs) {
     //     if (docs.length === 0) {
     //         return res.status(200).send()
@@ -25,9 +39,9 @@ router.get('/populate', function(req, res) {
     //     //find min most recentdate and go off of that
     //     var minDate = docs[0].mostRecentDate;
     //     docs.forEach(function(entry){
-    //     	if(entry.mostRecentDate < minDate){
-    //     		minDate = entry.mostRecentDate;
-    //     	}
+    //      if(entry.mostRecentDate < minDate){
+    //          minDate = entry.mostRecentDate;
+    //      }
     //     });
     //     console.log("minDate ",minDate)
 
@@ -42,7 +56,7 @@ router.get('/populate', function(req, res) {
     //         })
 
     //         async.series([
-    //             function(callback) {	//update the DB
+    //             function(callback) { //update the DB
     //                 var defer = q.defer();
     //                 q(helpers.getDateRangeData(packageNameArray, startDate, endDate)).then(function(value) {
     //                     callback(null);

@@ -26,7 +26,7 @@ router.get('/?', function(req, res) {
                 var responseObj = JSON.parse(response.body)
                 console.log('RESPONSE ', responseObj)
                 if (responseObj.hasOwnProperty("error")) {
-                    console.log('HERE')
+                    
                     return res.json([responseObj])
                 }
 
@@ -83,7 +83,7 @@ router.get('/?', function(req, res) {
             })
 
         } else {
-            console.log("HERE ",docs)
+            console.log("datarebuild86 ",docs)
             //delete this after dev, front end validation means this should never happen
             return res.json(docs)
 

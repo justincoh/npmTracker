@@ -29,6 +29,25 @@ var downloadSchema = new Schema({
     packageName: {type:String, required:true} //duplicated to make lookup easier on initial GET
 })
 
+// //How to tie this together
+// //need to go through download docs and update packageinfo
+// packageSchema.pre('save',function(next){
+//     if(this.isNew){
+//         var maxDate = new Date('2000-01-01');
+        
+//     }
+// })
+
+
+
+
+
+
+
+
+
+
+
 var npmPackage = mongoose.model('PackageInfo', packageSchema);
 var downloadSchema = mongoose.model('Downloads', downloadSchema);
 
@@ -36,3 +55,4 @@ module.exports = {
 	'PackageInfo':npmPackage,
 	'Downloads':downloadSchema
 }
+

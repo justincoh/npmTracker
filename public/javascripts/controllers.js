@@ -18,13 +18,18 @@ app.controller('MainCtrl', function($scope, data, populate) {
     //     });
     // });
 
+    populate.query(function(res,err){
+        console.log('RES ',res)
+        console.log('err ',err)
+    })
+
     $scope.packageData = data.getData();
 
     $scope.today = new Date();
     $scope.todayString = $scope.today.toISOString().slice(0, 10); 
     //on scope for display
 
-    $scope.startDate = new Date('2015-04-01');
+    $scope.startDate = new Date('2015-04-05');
     $scope.startDateString = $scope.startDate.toISOString().slice(0, 10);
     
     $scope.getNewData = function() {
