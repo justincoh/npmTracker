@@ -137,100 +137,59 @@ app.directive('summaryChart', function(data) {
                     });
 
                 var packages = svg.selectAll('.package')
-                //     .append('circle')
-                    
-                packages.each(function(parentData){
+                    //     .append('circle')
+
+                packages.each(function(parentData) {
                     // console.log('parentdata ',parentData)
                     var thisPackage = d3.select(this)
-                    // console.log('this ', thisPackage)
-                    thisPackage.selectAll('.downloads')
+                        // console.log('this ', thisPackage)
+                    thisPackage.selectAll('.datapoints')
                         .data(parentData.downloads)
                         .enter()
                         .append('circle')
-                        .attr('cx',function(d){
+                        .attr('class', function(d){
+                            return parentData.name + ' datapoints'
+                        })
+                        .attr('cx', function(d) {
                             return x(d.date)
                         })
-                        .attr('cy',function(d){
+                        .attr('cy', function(d) {
                             return y(d.downloads)
                         })
-                        .attr('r','5px')
+                        .attr('r', '5px')
+                        .attr('fill', function(d) {
+                            return color(parentData.name)
+                        })
+                        .on('mouseover', function(d) {
+                            buildTooltip.call(this);
+                        })
+                        .on('mousemove', function() {
+                            buildTooltip.call(this);
+                        })
+                        .on('mouseout', function() {
+                            tooltip.transition()
+                                .duration(500)
+                                .style('opacity', 0)
+                        });
                 })
+                var tooltip = d3.select('#tooltip')
 
-                // d3.selectAll('.package').each(function(parentData){
-                //     console.log('INSIDE EACH ',parentData, this)
-                //     d3.select(this)
-                //         .append('circle')
-                //         .data(parentData.downloads)
-                //         .enter()
-                //         .attr('cx',function(d){
-
-                //             return x(d.date)
-                //         })
-                //         .attr('cy',function(d){
-                //             return y(d.downloads)
-                //         })
-                //         .attr('r','5px')
-                //         .style('fill','black')
-                // })
-                                    
-
-                //This won't work because of how downloads is nested
-                // packages.append('circle')
-                //     .attr('class',function(d){
-                //         return d.name+ ' point'
-                //     })
-                //     .attr('cx', function(d){
-                //         console.log(d)
-                //         return x(d.downloads)
-                //     })
-                //     .attr('cx', function(d){
-                //         return y(d.downloads)
-                //     })
-                //     .attr('r','10px')
-
-                // packages.append('path')
-                //     .attr('class', function(d) {
-                //         return d.name + ' line'
-                //     })
-                //     .attr('clip-path', function(d) {
-                //         return 'url(#clip)'
-                //     })
-                //     .attr('d', function(d) {
-                //         return line(d.downloads)
-                //     })
-                //     .style('stroke', function(d) {
-                //         return color(d.name)
-                //     })
-                //     .on('mouseover', function(d) {
-                //         buildTooltip.call(this);
-                //     })
-                //     .on('mousemove', function() {
-                //         buildTooltip.call(this);
-                //     })
-                //     .on('mouseout', function() {
-                //         tooltip.transition()
-                //             .duration(500)
-                //             .style('opacity', 0)
-                //     });
-
-                // var tooltip = d3.select('#tooltip')
-
-                // function buildTooltip() {
-                //     var scaleData = d3.mouse(this)
-                //     var packageName = this.classList[0];
-                //     var displayName = packageName.slice(0,1).toUpperCase() + packageName.slice(1);
-                //     var date = x.invert(scaleData[0]).toLocaleDateString()
-                //     var downloads = y.invert(scaleData[1]).toFixed(0);
-                //     var template = displayName+'<br>'+date + '<br>' + downloads + ' Downloads';
-                //     tooltip
-                //         .style('left', (d3.event.pageX - 40) + 'px')
-                //         .style('top', (d3.event.pageY - 70) + 'px')
-                //     tooltip.html([template]);
-                //     tooltip.style('opacity', 1)
-                //         .style('background', function(d) {
-                //             return color(packageName)
-                //         })
-                // };
+                function buildTooltip() {
+                    var scaleData = d3.select(this)
+                    var packageName = this.classList[0];
+                    var displayName = packageName.slice(0, 1).toUpperCase() + packageName.slice(1);
+                    var date = x.invert(scaleData.attr('cx')).toLocaleDateString()
+                    var downloads = y.invert(scaleData.attr('cy')).toFixed(0);
+                    var template = displayName + '<br>' + date + '<br>' + downloads + ' Downloads';
+                    tooltip
+                        .style('left', (d3.event.pageX - 40) + 'px')
+                        .style('top', (d3.event.pageY - 70) + 'px')
+                    tooltip.html([template]);
+                    tooltip.style('opacity', 1)
+                        .style('background', function(d) {
+                            return color(packageName)
+                        })
+                };
 
 
                 //Building Legend
