@@ -136,8 +136,24 @@ app.directive('summaryChart', function(data) {
                         return d.name + ' package'
                     });
 
+
+
                 var packages = svg.selectAll('.package')
                     //     .append('circle')
+
+                packages.append('path')
+                    .attr('class', function(d) {
+                        return d.name + ' line'
+                    })
+                    .attr('clip-path', function(d) {
+                        return 'url(#clip)'
+                    })
+                    .attr('d', function(d) {
+                        return line(d.downloads)
+                    })
+                    .style('stroke', function(d) {
+                        return color(d.name)
+                    });
 
                 packages.each(function(parentData) {
                     // console.log('parentdata ',parentData)
@@ -156,7 +172,7 @@ app.directive('summaryChart', function(data) {
                         .attr('cy', function(d) {
                             return y(d.downloads)
                         })
-                        .attr('r', '5px')
+                        .attr('r', '3px')
                         .attr('fill', function(d) {
                             return color(parentData.name)
                         })
@@ -227,6 +243,10 @@ app.directive('summaryChart', function(data) {
 
                 function draw() {
                     //if blocks handle zoom/pan limits
+                    var domain = x.domain();
+                    domain = domain[1]-domain[0]; //date difference to handle dot sizing
+                    var msPerDay = 86400000;
+                    var diff = domain/msPerDay;
                     if (x.domain()[0] < startTime) {
                         var k = zoom.translate()[0] - x(startTime) + x.range()[0];
                         zoom.translate([k, 0]);
@@ -236,9 +256,33 @@ app.directive('summaryChart', function(data) {
                     }
 
                     svg.select("g.x.axis").call(xAxis);
-                    svg.selectAll("path.line").attr("d", function(d) {
+                    svg.selectAll("path.line")
+                        .attr("d", function(d) {
                         return line(d.downloads)
                     });
+                    svg.selectAll('.datapoints')
+                        .attr('cx',function(d){
+                            return x(d.date)
+                        })
+                        .attr('cy',function(d){
+                            return y(d.downloads)
+                        })
+                        .style('opacity',function(d){
+                            if(x(d.date)<=0){   //faking the clip
+                                return 0;
+                            }
+                        })
+                        .transition()
+                        .duration(250)
+                        .attr('r',function(d){
+                            if(diff>75){
+                                return '3px'
+                            } else if(diff>40){
+                                return '4px'
+                            } else if(diff>20){
+                                return '5px'
+                            } else {return '7px'}
+                        })
 
                 }
 
