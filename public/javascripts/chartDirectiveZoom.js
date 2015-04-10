@@ -128,30 +128,33 @@ app.directive('summaryChart', function(data) {
 
 
                 //this is where i append path, how to append multiples
-                var packages = svg.selectAll('.npmPackage')
+                svg.selectAll('.npmPackage')
                     .data(data)
                     .enter()
                     .append('g')
                     .attr('class', function(d) {
-                        
                         return d.name + ' package'
                     });
 
-                // var packages = svg.selectAll('.package')
-                //     // .append('circle')
+                var packages = svg.selectAll('.package')
+                //     .append('circle')
                     
-                // packages.each(function(parentData){
-                    
-                //     var thisPackage = d3.select(this)
-                //     // console.log(thisPackage.data)
-                //     thisPackage.selectAll('circle')
-                //         .datum(thisPackage.data)
-                //         .enter()
-                //         .append('circle')
-                //         .attr('cx',function(data){
-                //             console.log(data)
-                //         })
-                // })
+                packages.each(function(parentData){
+                    // console.log('parentdata ',parentData)
+                    var thisPackage = d3.select(this)
+                    // console.log('this ', thisPackage)
+                    thisPackage.selectAll('.downloads')
+                        .data(parentData.downloads)
+                        .enter()
+                        .append('circle')
+                        .attr('cx',function(d){
+                            return x(d.date)
+                        })
+                        .attr('cy',function(d){
+                            return y(d.downloads)
+                        })
+                        .attr('r','5px')
+                })
 
                 // d3.selectAll('.package').each(function(parentData){
                 //     console.log('INSIDE EACH ',parentData, this)
