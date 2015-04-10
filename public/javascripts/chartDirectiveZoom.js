@@ -68,6 +68,7 @@ app.directive('summaryChart', function(data) {
 
                 var line = d3.svg.line()
                     .x(function(d) {
+
                         return x(d.date)
                     })
                     .y(function(d) {
@@ -98,7 +99,7 @@ app.directive('summaryChart', function(data) {
                 svg.append("defs").append("clipPath")
                     .attr("id", "clip")
                     .append("rect")
-                    .attr("width", width*2)
+                    .attr("width", width * 2)
                     .attr("height", height);
 
 
@@ -109,7 +110,7 @@ app.directive('summaryChart', function(data) {
                 svg.append('g')
                     .attr("class", "x axis")
                     .attr("transform", "translate(0," + (height) + ")")
-                    .attr('width','100%')
+                    .attr('width', '100%')
                     .call(xAxis);
 
 
@@ -127,13 +128,18 @@ app.directive('summaryChart', function(data) {
 
 
                 //this is where i append path, how to append multiples
-                var packages = svg.selectAll('.npmPackage')
+                svg.selectAll('.npmPackage')
                     .data(data)
                     .enter()
                     .append('g')
                     .attr('class', function(d) {
-                        return d.name
+                        return d.name + ' package'
                     });
+
+
+
+                var packages = svg.selectAll('.package')
+                    //     .append('circle')
 
                 packages.append('path')
                     .attr('class', function(d) {
@@ -148,6 +154,59 @@ app.directive('summaryChart', function(data) {
                     .style('stroke', function(d) {
                         return color(d.name)
                     });
+
+                packages.each(function(parentData) {
+                    // console.log('parentdata ',parentData)
+                    var thisPackage = d3.select(this)
+                        // console.log('this ', thisPackage)
+                    thisPackage.selectAll('.datapoints')
+                        .data(parentData.downloads)
+                        .enter()
+                        .append('circle')
+                        .attr('class', function(d){
+                            return parentData.name + ' datapoints'
+                        })
+                        .attr('cx', function(d) {
+                            return x(d.date)
+                        })
+                        .attr('cy', function(d) {
+                            return y(d.downloads)
+                        })
+                        .attr('r', '3px')
+                        .attr('fill', function(d) {
+                            return color(parentData.name)
+                        })
+                        .on('mouseover', function(d) {
+                            buildTooltip.call(this);
+                        })
+                        .on('mousemove', function() {
+                            buildTooltip.call(this);
+                        })
+                        .on('mouseout', function() {
+                            tooltip.transition()
+                                .duration(500)
+                                .style('opacity', 0)
+                        });
+                })
+                var tooltip = d3.select('#tooltip')
+
+                function buildTooltip() {
+                    var scaleData = d3.select(this)
+                    var packageName = this.classList[0];
+                    var displayName = packageName.slice(0, 1).toUpperCase() + packageName.slice(1);
+                    var date = x.invert(scaleData.attr('cx')).toLocaleDateString()
+                    var downloads = y.invert(scaleData.attr('cy')).toFixed(0);
+                    var template = displayName + '<br>' + date + '<br>' + downloads + ' Downloads';
+                    tooltip
+                        .style('left', (d3.event.pageX - 40) + 'px')
+                        .style('top', (d3.event.pageY - 70) + 'px')
+                    tooltip.html([template]);
+                    tooltip.style('opacity', 1)
+                        .style('background', function(d) {
+                            return color(packageName)
+                        })
+                };
+
 
                 //Building Legend
                 //has to stay in here since it needs color.domain()
@@ -164,7 +223,7 @@ app.directive('summaryChart', function(data) {
                         var offset = height * color.domain().length / 2;
                         // var horz = -2 * legendRectSize;
                         var vert = i * height - offset;
-                        return 'translate(' + (width*1.05) + ',' + (vert + 200) + ')';
+                        return 'translate(' + (width * 1.05) + ',' + (vert + 200) + ')';
                     });
                 legend.append('rect')
                     .attr('width', legendRectSize)
@@ -184,6 +243,10 @@ app.directive('summaryChart', function(data) {
 
                 function draw() {
                     //if blocks handle zoom/pan limits
+                    var domain = x.domain();
+                    domain = domain[1]-domain[0]; //date difference to handle dot sizing
+                    var msPerDay = 86400000;
+                    var diff = domain/msPerDay;
                     if (x.domain()[0] < startTime) {
                         var k = zoom.translate()[0] - x(startTime) + x.range()[0];
                         zoom.translate([k, 0]);
@@ -193,9 +256,33 @@ app.directive('summaryChart', function(data) {
                     }
 
                     svg.select("g.x.axis").call(xAxis);
-                    svg.selectAll("path.line").attr("d", function(d) {
+                    svg.selectAll("path.line")
+                        .attr("d", function(d) {
                         return line(d.downloads)
                     });
+                    svg.selectAll('.datapoints')
+                        .attr('cx',function(d){
+                            return x(d.date)
+                        })
+                        .attr('cy',function(d){
+                            return y(d.downloads)
+                        })
+                        .style('opacity',function(d){
+                            if(x(d.date)<=0){   //faking the clip
+                                return 0;
+                            }
+                        })
+                        .transition()
+                        .duration(250)
+                        .attr('r',function(d){
+                            if(diff>75){
+                                return '3px'
+                            } else if(diff>40){
+                                return '4px'
+                            } else if(diff>20){
+                                return '5px'
+                            } else {return '7px'}
+                        })
 
                 }
 

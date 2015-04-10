@@ -8,7 +8,7 @@ var getDateRange = function(packagesToGet, startDate, endDate) {
     var packageString = packagesToGet.join(',');
     var apiCall = 'https://api.npmjs.org/downloads/range/' + startDate + ':' + endDate + '/' + packageString;
     //seriously friendly api
-    console.log(apiCall)
+    
 
     request(apiCall, function(err, response) {
         var obj = JSON.parse(response.body);

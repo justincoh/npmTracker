@@ -12,7 +12,9 @@ app.controller('MainCtrl', function($scope, data, populate) {
             namesOnScope.push(el.name)
         });
         //Refactor to use data.names TODO
-        $scope.packageData = $scope.allData.data.slice(0,3);
+        $scope.packageData = $scope.allData.data.filter(function(el){
+            return el.name ==='lodash' || el.name ==='underscore'
+        });
         $scope.packageData.forEach(function(el){
             namesInTable.push(el.name);
         });
@@ -47,6 +49,8 @@ app.controller('MainCtrl', function($scope, data, populate) {
     $scope.removePackage = function(packageName) {
         if($scope.packageData.length===1){
             d3.selectAll('path').remove();
+            d3.selectAll('.datapoints').remove();
+            d3.selectAll('.legend').remove();
         }
         $scope.packageData = $scope.packageData.filter(function(el) {
             return el.name !== packageName
