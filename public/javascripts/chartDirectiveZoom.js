@@ -183,11 +183,14 @@ app.directive('summaryChart', function(data) {
                             buildTooltip.call(this);
                         })
                         .on('mouseout', function() {
-                            tooltip.transition()
+                            tooltip
+                                .transition()
                                 .duration(500)
-                                .style('opacity', 0)
+                                .style('opacity',0)
+                                .each('end',removeTooltip) //fixes a hover bug
                         });
                 })
+
                 var tooltip = d3.select('#tooltip')
 
                 function buildTooltip() {
@@ -207,6 +210,11 @@ app.directive('summaryChart', function(data) {
                         })
                 };
 
+                var removeTooltip = function(){
+                    d3.select(this)
+                        .style('left',0+'px')
+                        .style('top',0+'px')
+                }
 
                 //Building Legend
                 //has to stay in here since it needs color.domain()
@@ -273,7 +281,6 @@ app.directive('summaryChart', function(data) {
                             }
                         })
                         .transition()
-                        .duration(250)
                         .attr('r',function(d){
                             if(diff>75){
                                 return '3px'
