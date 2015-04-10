@@ -137,22 +137,38 @@ app.directive('summaryChart', function(data) {
                         return d.name + ' package'
                     });
 
+                // var packages = svg.selectAll('.package')
+                //     // .append('circle')
+                    
+                // packages.each(function(parentData){
+                    
+                //     var thisPackage = d3.select(this)
+                //     // console.log(thisPackage.data)
+                //     thisPackage.selectAll('circle')
+                //         .datum(thisPackage.data)
+                //         .enter()
+                //         .append('circle')
+                //         .attr('cx',function(data){
+                //             console.log(data)
+                //         })
+                // })
 
-                d3.selectAll('.package').each(function(parentData){
-                    console.log('INSIDE EACH ',parentData, this)
-                    d3.select(this)
-                        .datum([parentData.downloads])
-                        .enter()
-                        .append('circle')
-                        .attr('cx',function(d){
-                            return x(d.date)
-                        })
-                        .attr('cy',function(d){
-                            return y(d.downloads)
-                        })
-                        .attr('r','5px')
-                        .style('fill','black')
-                })
+                // d3.selectAll('.package').each(function(parentData){
+                //     console.log('INSIDE EACH ',parentData, this)
+                //     d3.select(this)
+                //         .append('circle')
+                //         .data(parentData.downloads)
+                //         .enter()
+                //         .attr('cx',function(d){
+
+                //             return x(d.date)
+                //         })
+                //         .attr('cy',function(d){
+                //             return y(d.downloads)
+                //         })
+                //         .attr('r','5px')
+                //         .style('fill','black')
+                // })
                                     
 
                 //This won't work because of how downloads is nested
