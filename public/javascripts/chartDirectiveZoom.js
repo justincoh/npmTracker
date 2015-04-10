@@ -199,6 +199,7 @@ app.directive('summaryChart', function(data) {
                     var displayName = packageName.slice(0, 1).toUpperCase() + packageName.slice(1);
                     var date = x.invert(scaleData.attr('cx')).toLocaleDateString()
                     var downloads = y.invert(scaleData.attr('cy')).toFixed(0);
+                    var downloads= downloads.toString().replace(/(\d)(?=(\d\d\d)+(?!\d))/g, "$1,");
                     var template = displayName + '<br>' + date + '<br>' + downloads + ' Downloads';
                     tooltip
                         .style('left', (d3.event.pageX - 40) + 'px')
