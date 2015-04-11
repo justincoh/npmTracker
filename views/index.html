@@ -9,6 +9,9 @@
 </head>
 
 <body ng-app='npmTracker' ng-controller='MainCtrl'>
+    <div class="header">
+        <div id='header-text'>NPM Download Counts from {{startDateString}} through {{todayString}}</div>
+    </div>
     <div class="container">
         <div class="row">
             <summary-chart summary-data='packageData'></summary-chart>

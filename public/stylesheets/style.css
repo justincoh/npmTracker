@@ -1,5 +1,5 @@
 body {
-    padding: 50px;
+    padding: 20px;
     font: 14px "Lucida Grande", Helvetica, Arial, sans-serif;
     background-image: radial-gradient( #FFFFFF, #9B9E9E);
 }
@@ -22,6 +22,8 @@ hr {
 
 footer {
     margin-top: 20px;
+    position: relative;
+    bottom:10px;
 }
 
 .error {
@@ -30,7 +32,27 @@ footer {
 }
 
 .btn-mine{
-    background-color: #7515CD;
-    border-color: #7728bf;
+    background-color: #6f1d67;
+    border-color: #6f1d67;
     color: #fff;
+}
+
+
+
+.header{
+    margin: -20px -20px;
+    text-align: center;
+    font-size: 16px;
+    background: #6f1d67;
+    opacity: .5;
+    padding: 10px 0 20px 0;
+    background-image: -webkit-linear-gradient(top, #6f1d67, #320d2e);
+    background-image:    -moz-linear-gradient(top, #6f1d67, #320d2e);
+    background-image:     -ms-linear-gradient(top, #6f1d67, #320d2e);
+    background-image:      -o-linear-gradient(top, #6f1d67, #320d2e);
+}
+
+#header-text{
+    color:white;
+    
 }
