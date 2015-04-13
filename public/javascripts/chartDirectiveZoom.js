@@ -282,6 +282,7 @@ app.directive('summaryChart', function(data) {
                             }
                         })
                         .transition()
+                        .duration(100)
                         .attr('r',function(d){
                             if(diff>75){
                                 return '3px'
