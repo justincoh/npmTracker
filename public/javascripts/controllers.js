@@ -2,6 +2,20 @@
 
 app.controller('MainCtrl', function($scope, data, populate) {
     
+    //Testing Datepicker
+    $scope.formData = {};
+    $scope.formData.date = "";
+    $scope.opened = false;
+    $scope.date1='';
+    $scope.date2='';
+
+    $scope.dateOptions = {
+        'year-format': "'yy'",
+        'show-weeks': false
+    };
+    ///End datepicker
+
+
     var namesOnScope=[];
     var namesInTable=[];
     //Init        

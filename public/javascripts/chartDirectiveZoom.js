@@ -285,10 +285,12 @@ app.directive('summaryChart', function(data) {
                         .attr('r',function(d){
                             if(diff>75){
                                 return '3px'
-                            } else if(diff>40){
+                            } else if(diff>50){
                                 return '4px'
-                            } else if(diff>20){
+                            } else if(diff>25){
                                 return '5px'
+                            } else if(diff>12){
+                                return '6px'
                             } else {return '7px'}
                         })
 

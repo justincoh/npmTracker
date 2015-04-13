@@ -5,7 +5,8 @@
     <link rel="stylesheet" type="text/css" href="stylesheets/style.css">
     <link rel='icon' type='image/png' href='images/icon-48x48.png'>
     <title>NPM Tracker</title>
-    <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.3.14/angular.min.js"></script><!--up here for cloak-->
+    <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.3.14/angular.min.js"></script>
+    <!--up here for cloak-->
 </head>
 
 <body ng-app='npmTracker' ng-controller='MainCtrl'>
@@ -13,14 +14,19 @@
         <div class="row">
             <summary-chart summary-data='packageData'></summary-chart>
             <hr>
+            <div class="row">
+                <div class='col-xs-4'></div>
+                <mydatepicker class='col-xs-3' date='date1' date-options="dateOptions" opened="opened1"></mydatepicker>
+                <mydatepicker class='col-xs-3' date="date2" date-options="dateOptions" opened="opened2"></mydatepicker>
+            </div>
             <h4 ng-cloak class='text-center'>NPM Download Counts from {{startDateString}} through {{todayString}}</h4>
             <br>
             <div class="col-lg-8 col-lg-offset-4 col-md-8 col-md-offset-4 col-sm-9 col-sm-offset-3 col-xs-9 col-xs-offset-3">
                 <form ng-cloak ng-submit="getNewData()">
                     <button class="btn btn-mine">Get Data</button>
-                    <input type='text col-lg-9'  id='userInput' ng-model='packageName' placeholder='e.g. Async'>
+                    <input type='text col-lg-9' id='userInput' ng-model='packageName' placeholder='e.g. Async'>
                     <p ng-show='errorMessage' class='help-block'>{{errorMessage | upcase}}</p>
-                    <p ng-hide='errorMessage' class='help-block'>Missing Package?  Get It Here!</p>
+                    <p ng-hide='errorMessage' class='help-block'>Missing Package? Get It Here!</p>
                 </form>
             </div>
             <div class="col-lg-4 col-md-6 col-sm-6">
@@ -30,19 +36,22 @@
                 <h5 class='text-center'>Available Packages: Select to change data or highlight graph</h5>
                 <button ng-cloak class='btn btn-default col-lg-3 col-md-4 col-sm-6 col-xs-6 selectors' ng-repeat="data in allData.data | orderBy: 'name' " ng-click='addPackage(data.name)' ng-class="isActive(data.name)">{{::data.name | upcase}}</button>
             </div>
-            <!-- <datepicker></datepicker> -->
         </div>
         <footer class='footer'>
-        <div class='container text-center'><p>&copy;2015 <a href='https://github.com/justincoh/npmTracker'>justincoh</a>. Made possible by the fine folks at <a href='https://github.com/npm/download-counts'>npm</a></p></div>
+            <div class='container text-center'>
+                <p>&copy;2015 <a href='https://github.com/justincoh/npmTracker'>justincoh</a>. Made possible by the fine folks at <a href='https://github.com/npm/download-counts'>npm</a></p>
+            </div>
         </footer>
     </div>
 </body>
-
 <script src='modules/d3/d3.min.js' charset='utf-8'></script>
 <script src='modules/angular-resource/angular-resource.min.js'></script>
 <!-- <script src='javascripts/full.min.js'></script> -->
+<script src='bower/angular-bootstrap/ui-bootstrap.min.js'></script>
+<script src='bower/angular-bootstrap/ui-bootstrap-tpls.min.js'></script>
 <script src='javascripts/app.js'></script>
 <script src='javascripts/factories.js'></script>
 <script src='javascripts/controllers.js'></script>
 <script src='javascripts/chartDirectiveZoom.js'></script>
 <script src='javascripts/tableDirective.js'></script>
+<script src='javascripts/mydatepicker.directive.js'></script>
