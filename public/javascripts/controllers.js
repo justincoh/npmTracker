@@ -115,6 +115,11 @@ app.controller('MainCtrl', function($scope, data, populate) {
         }
     };
 
+    $scope.recalculate = function(){
+        $scope.setDates = false;
+        console.log('build this function')
+    }
+
 });
 
 
