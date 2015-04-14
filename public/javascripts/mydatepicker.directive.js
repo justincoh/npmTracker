@@ -5,10 +5,11 @@ app.directive('mydatepicker', function() {
             date: "=",
             dateOptions: "=",
             opened: "=",
+            desc: '@'
         },
         link: function(scope, element, attrs) {
             scope.open = function(event) {
-                console.log(event);
+                console.log(scope.date);
                 event.preventDefault();
                 event.stopPropagation();
                 scope.opened = true;

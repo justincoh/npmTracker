@@ -1,13 +1,13 @@
 'use strict';
 
 app.controller('MainCtrl', function($scope, data, populate) {
-    
+
     //Testing Datepicker
     $scope.formData = {};
     $scope.formData.date = "";
     $scope.opened = false;
-    $scope.date1='';
-    $scope.date2='';
+    $scope.date1 = '';
+    $scope.date2 = '';
 
     $scope.dateOptions = {
         'year-format': "'yy'",
@@ -16,34 +16,34 @@ app.controller('MainCtrl', function($scope, data, populate) {
     ///End datepicker
 
 
-    var namesOnScope=[];
-    var namesInTable=[];
+    var namesOnScope = [];
+    var namesInTable = [];
     //Init        
     populate.query(function(res, err) {
         data.setData(res);
         $scope.allData = data.getData();
-        $scope.allData.data.forEach(function(el){
+        $scope.allData.data.forEach(function(el) {
             namesOnScope.push(el.name)
         });
         //Refactor to use data.names TODO
-        $scope.packageData = $scope.allData.data.filter(function(el){
-            return el.name ==='lodash' || el.name ==='underscore'
+        $scope.packageData = $scope.allData.data.filter(function(el) {
+            return el.name === 'lodash' || el.name === 'underscore'
         });
-        $scope.packageData.forEach(function(el){
+        $scope.packageData.forEach(function(el) {
             namesInTable.push(el.name);
         });
     });
 
     $scope.today = new Date();
-    $scope.todayString = $scope.today.toISOString().slice(0, 10); 
+    $scope.todayString = $scope.today.toISOString().slice(0, 10);
     //on scope for display
 
     $scope.startDate = new Date('2015-01-01');
     $scope.startDateString = $scope.startDate.toISOString().slice(0, 10);
-    
+
     $scope.getNewData = function() {
-        if(namesOnScope.indexOf($scope.packageName.toLowerCase()) !==-1 ){
-            return $scope.errorMessage = $scope.packageName+' data is already here!'
+        if (namesOnScope.indexOf($scope.packageName.toLowerCase()) !== -1) {
+            return $scope.errorMessage = $scope.packageName + ' data is already here!'
         }
 
         data.resource.query({
@@ -52,16 +52,16 @@ app.controller('MainCtrl', function($scope, data, populate) {
             startDate: $scope.startDateString,
             endDate: $scope.todayString
         }, function(res, err) {
-            if(res[0]===0){
-                return $scope.errorMessage = 'No data found for package: '+$scope.packageName;
-                
+            if (res[0] === 0) {
+                return $scope.errorMessage = 'No data found for package: ' + $scope.packageName;
+
             }
             data.addToData(res[0]);
         });
     }
 
     $scope.removePackage = function(packageName) {
-        if($scope.packageData.length===1){
+        if ($scope.packageData.length === 1) {
             d3.selectAll('path').remove();
             d3.selectAll('.datapoints').remove();
             d3.selectAll('.legend').remove();
@@ -69,14 +69,15 @@ app.controller('MainCtrl', function($scope, data, populate) {
         $scope.packageData = $scope.packageData.filter(function(el) {
             return el.name !== packageName
         });
-        namesInTable = namesInTable.filter(function(name){
+        namesInTable = namesInTable.filter(function(name) {
             return name !== packageName;
         });
     };
 
     $scope.addPackage = function(packageName) {
-        if(namesInTable.indexOf(packageName)!==-1){
-            return $scope.lineHighlight(packageName)}
+        if (namesInTable.indexOf(packageName) !== -1) {
+            return $scope.lineHighlight(packageName)
+        }
         var packageToAdd = $scope.allData.data.filter(function(el) {
             return el.name === packageName;
         });
@@ -85,8 +86,8 @@ app.controller('MainCtrl', function($scope, data, populate) {
         namesInTable.push(packageToAdd.name);
     };
 
-    $scope.isActive = function(packageName){
-        return namesInTable.indexOf(packageName) !== -1 ? 'active':'';
+    $scope.isActive = function(packageName) {
+        return namesInTable.indexOf(packageName) !== -1 ? 'active' : '';
     }
 
 
@@ -95,13 +96,23 @@ app.controller('MainCtrl', function($scope, data, populate) {
             .duration(500)
             .ease('bounce')
             .style('stroke-width', '2px');
-        d3.select('.' + packageName+ ' .line')
+        d3.select('.' + packageName + ' .line')
             .transition()
             .duration(1000)
             .ease('bounce')
             .style('stroke-width', '8px')
     };
+
+    $scope.changeDates = function() {
+        if (!$scope.setDates || $scope.setDates === false) {
+            $scope.setDates = true;
+        } else {
+            $scope.setDates = false
+        }
+    };
+
 });
+
 
 
 app.filter('upcase', function() {

@@ -82,7 +82,6 @@ app.directive('summaryChart', function(data) {
                     .on('zoom', draw);
 
                 var svg = d3.select('#chart-container').append('svg')
-                    // .attr("width", width + margin.left + margin.right)
                     .attr("width", '100%')
                     .attr("height", height + margin.top + margin.bottom)
                     .append("g")
@@ -163,7 +162,7 @@ app.directive('summaryChart', function(data) {
                         .data(parentData.downloads)
                         .enter()
                         .append('circle')
-                        .attr('class', function(d){
+                        .attr('class', function(d) {
                             return parentData.name + ' datapoints'
                         })
                         .attr('cx', function(d) {
@@ -186,8 +185,8 @@ app.directive('summaryChart', function(data) {
                             tooltip
                                 .transition()
                                 .duration(500)
-                                .style('opacity',0)
-                                .each('end',removeTooltip) //fixes a hover bug
+                                .style('opacity', 0)
+                                .each('end', removeTooltip) //fixes a hover bug
                         });
                 })
 
@@ -199,7 +198,7 @@ app.directive('summaryChart', function(data) {
                     var displayName = packageName.slice(0, 1).toUpperCase() + packageName.slice(1);
                     var date = x.invert(scaleData.attr('cx')).toLocaleDateString()
                     var downloads = y.invert(scaleData.attr('cy')).toFixed(0);
-                    var downloads= downloads.toString().replace(/(\d)(?=(\d\d\d)+(?!\d))/g, "$1,");
+                    var downloads = downloads.toString().replace(/(\d)(?=(\d\d\d)+(?!\d))/g, "$1,");
                     var template = displayName + '<br>' + date + '<br>' + downloads + ' Downloads';
                     tooltip
                         .style('left', (d3.event.pageX - 40) + 'px')
@@ -211,10 +210,10 @@ app.directive('summaryChart', function(data) {
                         })
                 };
 
-                var removeTooltip = function(){
+                var removeTooltip = function() {
                     d3.select(this)
-                        .style('left',0+'px')
-                        .style('top',0+'px')
+                        .style('left', 0 + 'px')
+                        .style('top', 0 + 'px')
                 }
 
                 //Building Legend
@@ -253,9 +252,9 @@ app.directive('summaryChart', function(data) {
                 function draw() {
                     //if blocks handle zoom/pan limits
                     var domain = x.domain();
-                    domain = domain[1]-domain[0]; //date difference to handle dot sizing
+                    domain = domain[1] - domain[0]; //date difference to handle dot sizing
                     var msPerDay = 86400000;
-                    var diff = domain/msPerDay;
+                    var diff = domain / msPerDay;
                     if (x.domain()[0] < startTime) {
                         var k = zoom.translate()[0] - x(startTime) + x.range()[0];
                         zoom.translate([k, 0]);
@@ -267,32 +266,34 @@ app.directive('summaryChart', function(data) {
                     svg.select("g.x.axis").call(xAxis);
                     svg.selectAll("path.line")
                         .attr("d", function(d) {
-                        return line(d.downloads)
-                    });
+                            return line(d.downloads)
+                        });
                     svg.selectAll('.datapoints')
-                        .attr('cx',function(d){
+                        .attr('cx', function(d) {
                             return x(d.date)
                         })
-                        .attr('cy',function(d){
+                        .attr('cy', function(d) {
                             return y(d.downloads)
                         })
-                        .style('opacity',function(d){
-                            if(x(d.date)<=0){   //faking the clip
+                        .style('opacity', function(d) {
+                            if (x(d.date) <= 0) { //faking the clip
                                 return 0;
                             }
                         })
                         .transition()
                         .duration(100)
-                        .attr('r',function(d){
-                            if(diff>75){
+                        .attr('r', function(d) {
+                            if (diff > 75) {
                                 return '3px'
-                            } else if(diff>50){
+                            } else if (diff > 50) {
                                 return '4px'
-                            } else if(diff>25){
+                            } else if (diff > 25) {
                                 return '5px'
-                            } else if(diff>12){
+                            } else if (diff > 12) {
                                 return '6px'
-                            } else {return '7px'}
+                            } else {
+                                return '7px'
+                            }
                         })
 
                 }
