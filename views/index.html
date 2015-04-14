@@ -16,13 +16,12 @@
             <h3 class="col-xs-12 text-center">NPM Package Download Counts</h3>
             <summary-chart summary-data='packageData'></summary-chart>
             <hr>
-            startDate {{startDate | date : medium}} endDate {{endDate | date : medium}}
             <h4 ng-cloak class='col-xs-12 text-center'>Download Counts from {{startDate | date : medium}} through {{endDate | date : medium}} <span><button  ng-click='changeDates()' class='btn btn-axis pull-right'>Change Dates</button></span></h4>
             
             <div class='setDates col-xs-12' ng-show='setDates'>
                 <div class='col-xs-2'></div>
                 <mydatepicker class='col-xs-3' date='startDate' date-options="dateOptions" opened="opened1" desc='Start Date'></mydatepicker>
-                <button class='btn btn-mine col-xs-1' ng-click='changeDates(1)'>Defaults</button>
+                <button class='btn btn-blue col-xs-1' ng-click='changeDates(1)'>Defaults</button>
                 <mydatepicker class='col-xs-3' date="endDate" date-options="dateOptions" opened="opened2" desc='End Date'></mydatepicker>
                 <button class='btn btn-green pull-right' ng-click='recalculate()'>Go</button>
             </div>
