@@ -11,11 +11,13 @@
 
 <body ng-app='npmTracker' ng-controller='MainCtrl'>
     <div class="container">
+
         <div class="row">
             <h3 class="col-xs-12 text-center">NPM Package Download Counts</h3>
             <summary-chart summary-data='packageData'></summary-chart>
             <hr>
-            <h4 ng-cloak class='text-center'>Download Counts from {{startDateString}} through {{todayString}} <span><button  ng-click='changeDates()' class='btn btn-axis btn-xs pull-right'>Change Dates</button></span></h4>
+            date1 {{date1 | date : medium}} date2 {{date2 | date : medium}}
+            <h4 ng-cloak class='text-center'>Download Counts from {{startDate | date : medium}} through {{endDate | date : medium}} <span><button  ng-click='changeDates()' class='btn btn-axis btn-xs pull-right'>Change Dates</button></span></h4>
             
             <div ng-show='setDates'>
                 <div class='col-xs-3'></div>

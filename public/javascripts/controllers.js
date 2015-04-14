@@ -3,8 +3,8 @@
 app.controller('MainCtrl', function($scope, data, populate) {
 
     //Testing Datepicker
-    $scope.formData = {};
-    $scope.formData.date = "";
+    // $scope.formData = {};
+    // $scope.formData.date = "";
     $scope.opened = false;
     $scope.date1 = '';
     $scope.date2 = '';
@@ -34,23 +34,22 @@ app.controller('MainCtrl', function($scope, data, populate) {
         });
     });
 
-    $scope.today = new Date();
-    $scope.todayString = $scope.today.toISOString().slice(0, 10);
-    //on scope for display
-
-    $scope.startDate = new Date('2015-01-01');
-    $scope.startDateString = $scope.startDate.toISOString().slice(0, 10);
+    $scope.endDate = new Date();
+    $scope.startDate = new Date('2015-01-02');
+    
 
     $scope.getNewData = function() {
         if (namesOnScope.indexOf($scope.packageName.toLowerCase()) !== -1) {
             return $scope.errorMessage = $scope.packageName + ' data is already here!'
         }
 
+        var startDateString = $scope.startDate.toISOString().slice(0, 10);
+        var endDateString = $scope.endDate.toISOString().slice(0, 10);
         data.resource.query({
             //need query for isArray = true
             name: $scope.packageName,
-            startDate: $scope.startDateString,
-            endDate: $scope.todayString
+            startDate: startDateString,
+            endDate: endDateString
         }, function(res, err) {
             if (res[0] === 0) {
                 return $scope.errorMessage = 'No data found for package: ' + $scope.packageName;
@@ -103,11 +102,16 @@ app.controller('MainCtrl', function($scope, data, populate) {
             .style('stroke-width', '8px')
     };
 
-    $scope.changeDates = function() {
-        if (!$scope.setDates || $scope.setDates === false) {
-            $scope.setDates = true;
+    $scope.changeDates = function(defaults) {
+        if (defaults) {
+            $scope.startDate = new Date('2015-01-02');
+            $scope.endDate = new Date();
         } else {
-            $scope.setDates = false
+            if (!$scope.setDates || $scope.setDates === false) {
+                $scope.setDates = true;
+            } else {
+                $scope.setDates = false
+            }
         }
     };
 
@@ -121,3 +125,4 @@ app.filter('upcase', function() {
         return input[0].toUpperCase() + input.slice(1).toLowerCase();
     }
 });
+
