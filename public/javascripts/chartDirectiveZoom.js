@@ -203,7 +203,7 @@ app.directive('summaryChart', function(data) {
                     var template = displayName + '<br>' + date + '<br>' + downloads + ' Downloads';
                     tooltip
                         .style('left', (d3.event.pageX - 40) + 'px')
-                        .style('top', (d3.event.pageY - 70) + 'px')
+                        .style('top', (d3.event.pageY - 75) + 'px')
                     tooltip.html([template]);
                     tooltip.style('opacity', 1)
                         .style('background', function(d) {
