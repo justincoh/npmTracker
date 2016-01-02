@@ -1,10 +1,10 @@
 'use strict';
 
 app.controller('MainCtrl', function($scope, data, populate) {
-    
+
     var namesOnScope=[];
     var namesInTable=[];
-    //Init        
+    //Init
     populate.query(function(res, err) {
         data.setData(res);
         $scope.allData = data.getData();
@@ -21,12 +21,12 @@ app.controller('MainCtrl', function($scope, data, populate) {
     });
 
     $scope.today = new Date();
-    $scope.todayString = $scope.today.toISOString().slice(0, 10); 
+    $scope.todayString = $scope.today.toISOString().slice(0, 10);
     //on scope for display
 
-    $scope.startDate = new Date('2015-01-01');
+    $scope.startDate = new Date('2015-06-01');
     $scope.startDateString = $scope.startDate.toISOString().slice(0, 10);
-    
+
     $scope.getNewData = function() {
         if(namesOnScope.indexOf($scope.packageName.toLowerCase()) !==-1 ){
             return $scope.errorMessage = $scope.packageName+' data is already here!'
@@ -40,7 +40,7 @@ app.controller('MainCtrl', function($scope, data, populate) {
         }, function(res, err) {
             if(res[0]===0){
                 return $scope.errorMessage = 'No data found for package: '+$scope.packageName;
-                
+
             }
             data.addToData(res[0]);
         });

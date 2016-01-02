@@ -25,7 +25,7 @@ app.directive('summaryChart', function(data) {
                 var width = 1000 - margin.left - margin.right;
                 var height = 500 - margin.top - margin.bottom;
 
-                var startTime = new Date('2015-01-01');
+                var startTime = new Date('2015-06-01');
                 var endTime = new Date();
 
 
