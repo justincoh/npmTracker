@@ -1,4 +1,5 @@
 app.directive('summaryChart', function(data) {
+    //this REALLY needs to be componentized and rebuilt ...
     return {
         restrict: 'E',
         templateUrl: 'templates/summaryChart.html',
@@ -6,6 +7,7 @@ app.directive('summaryChart', function(data) {
             scope.$watch('packageData.length', function() {
                 if (typeof scope.packageData !== 'undefined' && typeof scope.packageData[0] !== 'undefined') {
                     scope.buildChart();
+                    d3.select('.spinner').style('display','none');
                 }
             });
 
